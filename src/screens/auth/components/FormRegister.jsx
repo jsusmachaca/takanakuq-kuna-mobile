@@ -14,22 +14,8 @@ export const FormRegister = () => {
     <View style={styles.formContainerRegister}>
       <View style={styles.formulario}>
         <TextInput 
-          placeholder='Ingrese un nombre de usuario' 
-          style={styles.loginInput}
-          returnKeyType='next'
-          value={username}
-          onChangeText={setUsername}
-        />
-        <TextInput 
-          placeholder='Ingrese un correo electrónico' 
-          style={styles.loginInput}
-          returnKeyType='next'
-          value={email}
-          onChangeText={setEmail}
-        />
-        <TextInput 
           placeholder='Ingrese sus nombres' 
-          style={styles.loginInput} 
+          style={styles.loginInput}
           returnKeyType='next'
           value={names}
           onChangeText={setNames}
@@ -42,15 +28,35 @@ export const FormRegister = () => {
           onChangeText={setLastNames}
         />
         <TextInput 
+          placeholder='Ingrese un nombre de usuario' 
+          style={styles.loginInput}
+          returnKeyType='next'
+          autoCapitalize='none'
+          value={username}
+          onChangeText={setUsername}
+        />
+        <TextInput 
+          placeholder='Ingrese un correo electrónico' 
+          style={styles.loginInput}
+          returnKeyType='next'
+          autoCapitalize='none'
+          value={email}
+          onChangeText={setEmail}
+        />
+        <TextInput 
           placeholder='Ingrese una contraseña' 
           style={styles.loginInput} 
           returnKeyType='next'
+          autoCapitalize='none'
+          secureTextEntry={true}
           value={password}
           onChangeText={setPassword}
         />
         <TextInput 
           placeholder='Confirme su contraseña' 
           style={styles.loginInput} 
+          autoCapitalize='none'
+          secureTextEntry={true}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
         />

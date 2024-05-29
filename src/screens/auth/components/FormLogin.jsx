@@ -2,9 +2,11 @@ import { TextInput, View, TouchableOpacity, Text, TouchableWithoutFeedback } fro
 import { useState } from 'react'
 import { styles } from '../styles/formStyles'
 import { apiClient } from '../../../utils/api/client'
-import { db } from '../../../utils/db/sqlite'
+import { useSQLiteContext } from 'expo-sqlite'
 
 export const FormLogin = (props) => {
+  const db = useSQLiteContext()
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -13,24 +15,13 @@ export const FormLogin = (props) => {
       username: username,
       password: password
     })
-      .then (res => {
-        db.transaction(tx => {
-          tx.executeSql(
-            'INSERT INTO user (username, token) VALUES (?, ?);',
-            [username, res.data.access_token],
-            () => { console.log('User inserted successfully') },
-            (tx, error) => { console.log('Error inserting item: ', error) }
-          )
+      .then (async res => {
+        await db.runAsync(`INSERT INTO user (username, token) 
+        VALUES (?, ?);`, 
+        [username, res.data.access_token])
+        console.log('Insertion successfully')
 
-          tx.executeSql(
-            'SELECT * FROM user;',
-            [],
-            (tx, results) => {
-              console.log('Query results:', results.rows)
-            },
-            (tx, error) => { console.log('Error fetching users:', error); }
-          );
-        })
+        props.navigation.navigate('Home')
       })
       .catch (err => {
         console.log(err)
@@ -44,12 +35,15 @@ export const FormLogin = (props) => {
           placeholder='Ingrese su nombre usuario'
           style={styles.loginInput}
           returnKeyType='next'
+          autoCapitalize='none'
           value={username}
           onChangeText={data => setUsername(data)}
         />
         <TextInput 
           placeholder='Ingrese su contraseña'
           style={styles.loginInput}
+          autoCapitalize='none'
+          secureTextEntry={true}
           value={password}
           onChangeText={data => setPassword(data)}
         />

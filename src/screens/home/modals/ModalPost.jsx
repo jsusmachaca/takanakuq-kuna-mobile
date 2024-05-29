@@ -14,7 +14,6 @@ export const ModalPost = (props) => {
     apiClient.get(`/api/comments/get-comments?post=${props.id}`)
       .then(res => {
         setComments(res.data)
-        console.log(comments)
       })
       .catch(err => {
         console.error(err)
