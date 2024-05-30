@@ -1,31 +1,16 @@
-import { View, Keyboard, Image, ScrollView } from 'react-native'
+import { Image, View, Keyboard, KeyboardAvoidingView, Platform } from 'react-native'
 import { useEffect, useState } from 'react'
-import { FormRegister } from './components/FormRegister'
+import { FormProfile } from './components/FormProfile'
 import { styles } from './styles/styles'
-import { useSQLiteContext } from 'expo-sqlite'
 
 import logo_1 from './assets/avatars/logo.1.jpg'
 import logo_2 from './assets/avatars/logo.2.jpg'
 
 const logos = [logo_1, logo_2]
 
-export const Register = ({ navigation }) => {
-  const db = useSQLiteContext()
-
+export const Profile = ({ navigation }) => {
   const [image, setImage] = useState(logos[0])
   const [isKeyboardVisible, setKeyboardVisible] = useState(false)
-
-  useEffect(() => {
-    const token = async () => {
-      const [result] = await db.getAllAsync('SELECT * FROM user')
-      if (result && result.username && result.token) {
-        navigation.navigate('Home')
-      } else {
-        console.log(result)
-      }
-    }
-    token()
-  }, [db, navigation])
 
   useEffect(() => {
     let index = 0
@@ -52,15 +37,21 @@ export const Register = ({ navigation }) => {
     }
   }, [isKeyboardVisible])
 
-  return( 
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={[styles.logoContainerRegister, { marginBottom: isKeyboardVisible ? 55 : 0 }]}>
-          {!isKeyboardVisible && (
-            <Image source={image} style={styles.logoRegister} />
-          )}
+
+  return(
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      {
+      /*
+        <View style={styles.logoContainer}>
+          {!isKeyboardVisible && (<Image source={image} style={styles.logo} />)}
         </View>
-        <FormRegister navigation={navigation} />
-      </ScrollView>
+        */
+      }
+      <FormProfile navigation={navigation} />
+    </KeyboardAvoidingView>
   )
 }
 

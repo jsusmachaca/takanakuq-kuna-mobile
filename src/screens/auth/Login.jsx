@@ -2,6 +2,7 @@ import { Image, View, Keyboard, KeyboardAvoidingView, Platform } from 'react-nat
 import { useEffect, useState } from 'react'
 import { FormLogin } from './components/FormLogin'
 import { styles } from './styles/styles'
+import { useSQLiteContext } from 'expo-sqlite'
 
 import logo_1 from './assets/avatars/logo.1.jpg'
 import logo_2 from './assets/avatars/logo.2.jpg'
@@ -9,8 +10,22 @@ import logo_2 from './assets/avatars/logo.2.jpg'
 const logos = [logo_1, logo_2]
 
 export const Login = ({ navigation }) => {
+  const db = useSQLiteContext()
+
   const [image, setImage] = useState(logos[0])
   const [isKeyboardVisible, setKeyboardVisible] = useState(false)
+
+  useEffect(() => {
+    const token = async () => {
+      const [result] = await db.getAllAsync('SELECT * FROM user')
+      if (result && result.username && result.token) {
+        navigation.navigate('Home')
+      } else {
+        console.log(result)
+      }
+    }
+    token()
+  }, [db, navigation])
 
   useEffect(() => {
     let index = 0
@@ -46,7 +61,7 @@ export const Login = ({ navigation }) => {
       <View style={styles.logoContainer}>
         {!isKeyboardVisible && (<Image source={image} style={styles.logo} />)}
       </View>
-      <FormLogin navigation={ navigation } />
+      <FormLogin navigation={navigation} />
     </KeyboardAvoidingView>
   )
 }
