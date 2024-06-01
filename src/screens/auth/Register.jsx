@@ -1,4 +1,4 @@
-import { View, Keyboard, Image, ScrollView } from 'react-native'
+import { View, Keyboard, Image, ScrollView, StatusBar } from 'react-native'
 import { useEffect, useState } from 'react'
 import { FormRegister } from './components/FormRegister'
 import { styles } from './styles/styles'
@@ -54,6 +54,7 @@ export const Register = ({ navigation }) => {
 
   return( 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <StatusBar />
         <View style={[styles.logoContainerRegister, { marginBottom: isKeyboardVisible ? 55 : 0 }]}>
           {!isKeyboardVisible && (
             <Image source={image} style={styles.logoRegister} />

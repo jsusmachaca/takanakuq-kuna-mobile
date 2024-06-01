@@ -20,7 +20,6 @@ export const Posts = () => {
       apiClient.get(`/api/posts/all`)
         .then(res => {
           setData(res.data)
-          console.log(res.data)
         })
         .catch(err => console.error(err))
       setRefreshing(false);

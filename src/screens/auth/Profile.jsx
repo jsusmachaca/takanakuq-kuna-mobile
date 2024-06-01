@@ -1,4 +1,4 @@
-import { Image, View, Keyboard, KeyboardAvoidingView, Platform } from 'react-native'
+import { Image, View, Keyboard, KeyboardAvoidingView, Platform, StatusBar } from 'react-native'
 import { useEffect, useState } from 'react'
 import { FormProfile } from './components/FormProfile'
 import { styles } from './styles/styles'
@@ -43,6 +43,7 @@ export const Profile = ({ navigation }) => {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      <StatusBar />
       {
       /*
         <View style={styles.logoContainer}>

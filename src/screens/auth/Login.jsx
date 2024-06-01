@@ -1,4 +1,4 @@
-import { Image, View, Keyboard, KeyboardAvoidingView, Platform } from 'react-native'
+import { Image, View, Keyboard, KeyboardAvoidingView, Platform, StatusBar } from 'react-native'
 import { useEffect, useState } from 'react'
 import { FormLogin } from './components/FormLogin'
 import { styles } from './styles/styles'
@@ -58,6 +58,7 @@ export const Login = ({ navigation }) => {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      <StatusBar />
       <View style={styles.logoContainer}>
         {!isKeyboardVisible && (<Image source={image} style={styles.logo} />)}
       </View>
