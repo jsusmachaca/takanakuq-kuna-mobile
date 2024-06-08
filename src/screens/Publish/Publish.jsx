@@ -1,15 +1,36 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet} from "react-native";
 import { Svg, Path } from "react-native-svg";
 import { apiClient } from "../../utils/api/client";
 import { useSQLiteContext } from "expo-sqlite";
+import { ArrowBack } from "./components/ArrowBack";
+import { PublishButton } from "./components/PublishButton";
 
 export const Publish = ({ navigation }) => {
   const db = useSQLiteContext()
-
   const [post, setPost] = useState('')
+  const [placeholder, setPlaceholder] = useState('¿Comparte lo que sientes?')
+  const [placeholderColor, setPlaceholderColor] = useState('#636363')
   
+  useEffect (() => {
+    setPost('')
+    setPlaceholderColor('#636363')
+    setPlaceholder('¿Comparte lo que sientes?')
+  }, [])
+
+  const onPressBack = () => {
+    setPost('')
+    setPlaceholderColor('#636363')
+    setPlaceholder('¿Comparte lo que sientes?')
+    navigation.navigate('Home')
+  }
+
   const handlePost = async () => {
+    if (post.length === 0) {
+      setPlaceholder('Escribe algo para poder publicarlo')
+      setPlaceholderColor('#CD0A0A')
+      return
+    }
     const [result] = await db.getAllAsync('SELECT * FROM user')
 
     apiClient.post('/api/posts/publish', {
@@ -21,8 +42,10 @@ export const Publish = ({ navigation }) => {
       }
     })
       .then (res => {
-        navigation.navigate('Home')
         setPost('')
+        setPlaceholderColor('#636363')
+        setPlaceholder('¿Comparte lo que sientes?')
+        navigation.navigate('Home')
       })
       .catch (err => {
         console.error(`Error to publish post error message: ${err.response}`)
@@ -45,56 +68,19 @@ export const Publish = ({ navigation }) => {
         shadowOpacity: 0.5,
         elevation: 5,
       }}>
-        <View
-          style={{
-            width: 50,
-            margin: 0,
-            padding: 0
-          }}
-        >
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Svg
-              viewBox="0 0 24 24"
-              fill='none'
-              style={{
-                padding: 0,
-                margin: 0,
-              }}
-              >
-              <Path
-                d="M6.3508 12.7499L11.2096 17.4615L10.1654 18.5383L3.42264 11.9999L10.1654 5.46148L11.2096 6.53833L6.3508 11.2499L21 11.2499L21 12.7499L6.3508 12.7499Z"
-                stroke='#FF8F00'
-                strokeWidth='1.5'
-                fillRule="evenodd"
-                clipRule="evenodd"
-                />
-            </Svg>
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            marginRight: 10,
-            backgroundColor: '#FF8F00',
-            height: 30,
-            width: 80,
-            borderRadius: 10,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <TouchableOpacity onPress={() => handlePost()}>
-            <Text style={{ color: 'white', fontWeight: 'bold' }}>Publicar</Text>
-          </TouchableOpacity>
-        </View>
+        <ArrowBack onPress={onPressBack} />
+        <PublishButton onPress={handlePost} />
+  
       </View>
       <View>
         <TextInput
-          placeholder="¿Comparte los que sientes?"
+          placeholder={placeholder}
+          placeholderTextColor={placeholderColor}
           style={{
             backgroundColor: 'white',
             height: 100,
             marginTop: 10,
-            fontSize: 19
+            fontSize: 19,
           }}
           value={post}
           onChangeText={setPost}
