@@ -15,14 +15,15 @@ export const styles = StyleSheet.create({
     width: 45,
     height: 45,
     borderRadius: 50,
-    marginRight: 10
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: '#D73400',
   },
   container: {
     margin: 5,
     padding: 10,
-    borderWidth: 1,
     borderColor: '#000',
-    borderRadius: 20,
+    borderRadius: 10,
     backgroundColor: "#fff"
   },
   username: {

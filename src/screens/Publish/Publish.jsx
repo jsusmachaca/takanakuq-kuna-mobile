@@ -1,59 +1,116 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet} from "react-native";
-import { Svg, Path } from "react-native-svg";
+import { View, Text, TextInput, TouchableOpacity, Platform, Image, Alert, ActivityIndicator, Modal} from "react-native";
 import { apiClient } from "../../utils/api/client";
 import { useSQLiteContext } from "expo-sqlite";
 import { ArrowBack } from "./components/ArrowBack";
+import * as ImagePicker from 'expo-image-picker'
 import { PublishButton } from "./components/PublishButton";
+import { Svg, Path } from "react-native-svg";
 
 export const Publish = ({ navigation }) => {
+  const [isLoading, setIsLoading] = useState(false)
   const db = useSQLiteContext()
   const [post, setPost] = useState('')
   const [placeholder, setPlaceholder] = useState('¿Comparte lo que sientes?')
   const [placeholderColor, setPlaceholderColor] = useState('#636363')
+  const [image, setImage] = useState(null)
   
   useEffect (() => {
     setPost('')
+    setImage(null)
     setPlaceholderColor('#636363')
     setPlaceholder('¿Comparte lo que sientes?')
   }, [])
 
+
+  const pickImage = async () => {
+    if (Platform.OS !== 'web') {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+      if (status !== 'granted') {
+        Alert.alert('Lo siento, necesitamos permisos para acceder a la cámara.')
+        return
+      }
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    })
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  }
+
   const onPressBack = () => {
     setPost('')
+    setImage(null)
     setPlaceholderColor('#636363')
     setPlaceholder('¿Comparte lo que sientes?')
     navigation.navigate('Home')
   }
 
   const handlePost = async () => {
-    if (post.length === 0) {
-      setPlaceholder('Escribe algo para poder publicarlo')
-      setPlaceholderColor('#CD0A0A')
-      return
-    }
-    const [result] = await db.getAllAsync('SELECT * FROM user')
-
-    apiClient.post('/api/posts/publish', {
-      post: post
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${result.token}`
+    try {
+      setIsLoading(true)
+      let formData = new FormData()
+      
+      if (post.length === 0) {
+        setPlaceholder('Escribe algo para poder publicarlo')
+        setPlaceholderColor('#CD0A0A')
+        return
       }
-    })
-      .then (res => {
+      const [result] = await db.getAllAsync('SELECT * FROM user')
+      
+      if (image) {
+        let filename = image.split('/').pop()
+        let match = /\.(\w+)$/.exec(filename)
+        let type = match ? `image/${match[1]}` : `image`
+        
+        formData.append('post_image', { uri: image, name: filename, type })
+      }
+      formData.append('post', post);
+  
+      const res = await apiClient.post('/api/posts/publish', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${result.token}`
+        },
+      })
+      if (res) {
         setPost('')
+        setImage(null)
         setPlaceholderColor('#636363')
         setPlaceholder('¿Comparte lo que sientes?')
+        setIsLoading(false)
         navigation.navigate('Home')
-      })
-      .catch (err => {
-        console.error(`Error to publish post error message: ${err.response}`)
-      })
+      }
+    } catch (err) {
+      console.error(err.response.data)
+      setIsLoading(false)
+      Alert.alert('Lo siento, no pudimos realizar su publicación.')
+    }
   }
-
+  
   return (
     <View>
+      <Modal
+        visible={isLoading}
+        transparent={true}
+        animationType="fade"
+      >
+        <View style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        }}>
+          <ActivityIndicator size="large" color="#ffffff" />
+        </View>
+      </Modal>
+
       <View style={{
         backgroundColor: 'white',
         height: 55,
@@ -70,42 +127,77 @@ export const Publish = ({ navigation }) => {
       }}>
         <ArrowBack onPress={onPressBack} />
         <PublishButton onPress={handlePost} />
-  
       </View>
-      <View>
+      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
         <TextInput
           placeholder={placeholder}
           placeholderTextColor={placeholderColor}
+          multiline={true}
           style={{
             backgroundColor: 'white',
-            height: 100,
+            width: 380,
+            height: 'auto',
             marginTop: 10,
+            borderRadius: 10,
             fontSize: 19,
+            padding: 10,
+            borderWidth: 1,
+            borderColor: placeholderColor,
           }}
           value={post}
           onChangeText={setPost}
-          
         />
+      </View>
+
+      <View 
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+
+      <View style={{
+        marginLeft: 0,
+        marginRight: 0,
+        borderWidth: 1,
+        borderRadius: 10,
+        borderColor: 'gray',
+        backgroundColor: '#C5C5C5',
+        overflow: 'hidden',
+        width: 370,
+        height: 330,
+        justifyContent: 'center', 
+        alignItems: 'center',
+        marginTop: 50,
+      }}>
+        {
+          image ?
+          <Image
+          style={{width: 370, height: 330}}
+              source={{ uri: image }} 
+            />
+          :
+          <TouchableOpacity onPress={pickImage} style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <Svg 
+              viewBox="0 0 512 512"
+              width='50'
+              height='50'
+              >
+              <Path 
+                d="M149.1 64.8L138.7 96H64C28.7 96 0 124.7 0 160V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H373.3L362.9 64.8C356.4 45.2 338.1 32 317.4 32H194.6c-20.7 0-39 13.2-45.5 32.8zM256 192a96 96 0 1 1 0 192 96 96 0 1 1 0-192z"
+                />
+            </Svg>
+            <Text style={{ fontSize: 19 }}>Subir una imagen</Text>
+          </TouchableOpacity>
+        }        
+      </View>
       </View>
     </View>
   )
 }
 
 /*
-<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-  <g id="SVGRepo_iconCarrier"> 
-    <path d="M22 11.9299H2" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> 
-    <path d="M8.00009 19L2.84009 14C2.5677 13.7429 2.35071 13.433 2.20239 13.0891C2.05407 12.7452 1.97754 12.3745 1.97754 12C1.97754 11.6255 2.05407 11.2548 2.20239 10.9109C2.35071 10.567 2.5677 10.2571 2.84009 10L8.00009 5" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> 
-  </g>
-</svg>
-
-
-<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-<g id="SVGRepo_iconCarrier"> 
-<path fill-rule="evenodd" clip-rule="evenodd" d="M6.3508 12.7499L11.2096 17.4615L10.1654 18.5383L3.42264 11.9999L10.1654 5.46148L11.2096 6.53833L6.3508 11.2499L21 11.2499L21 12.7499L6.3508 12.7499Z" fill="#080341"></path>
-</g>
+<svg viewBox="0 0 512 512">
+  <path d="M149.1 64.8L138.7 96H64C28.7 96 0 124.7 0 160V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H373.3L362.9 64.8C356.4 45.2 338.1 32 317.4 32H194.6c-20.7 0-39 13.2-45.5 32.8zM256 192a96 96 0 1 1 0 192 96 96 0 1 1 0-192z"/>
 </svg>
 */

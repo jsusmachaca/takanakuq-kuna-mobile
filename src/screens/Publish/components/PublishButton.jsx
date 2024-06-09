@@ -3,15 +3,12 @@ import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
 
 export const PublishButton = (props) => {
   return (
-    <View>
     <TouchableOpacity 
       onPress={() => props.onPress()} 
       style={[styles.publishButton]}
     >
       <Text style={{ color: 'white', fontWeight: 'bold' }}>Publicar</Text>
     </TouchableOpacity>
-  </View>
-
   )
 }
 

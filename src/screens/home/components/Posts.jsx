@@ -1,17 +1,25 @@
-import { View, Text, FlatList, Image, RefreshControl } from "react-native";
-import { apiClient } from "../../../utils/api/client";
-import { useState, useEffect } from "react";
-import { PostsItem } from "./PostsItem";
+import { useCallback } from "react";
+import { View, Text, FlatList, Image, RefreshControl } from "react-native"
+import { apiClient } from "../../../utils/api/client"
+import { useState, useEffect } from "react"
+import { PostsItem } from "./PostsItem"
 
 
 export const Posts = () => {
-  const [refreshing, setRefreshing] = useState(false);
-  const [ mostData, setData] = useState({})
+  const [refreshing, setRefreshing] = useState(false)
+  const [mostData, setData] = useState({})
+
+  const fetchData = async () => {
+    try {
+      const res = await apiClient.get(`/api/posts/all`)
+      setData(res.data)
+    } catch (err) {
+      console.error(err.response)
+    }
+  }
 
   useEffect(() => {
-    apiClient.get(`/api/posts/all`)
-      .then(res => setData(res.data))
-      .catch(err => console.error(err))
+    fetchData()
   }, [])
 
   const onRefresh = () => {
