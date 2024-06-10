@@ -35,7 +35,7 @@ export const Publish = ({ navigation }) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [5, 4],
       quality: 1,
     })
 
@@ -60,6 +60,7 @@ export const Publish = ({ navigation }) => {
       if (post.length === 0) {
         setPlaceholder('Escribe algo para poder publicarlo')
         setPlaceholderColor('#CD0A0A')
+        setIsLoading(false)
         return
       }
       const [result] = await db.getAllAsync('SELECT * FROM user')
@@ -88,7 +89,7 @@ export const Publish = ({ navigation }) => {
         navigation.navigate('Home')
       }
     } catch (err) {
-      console.error(err.response.data)
+      console.error(err)
       setIsLoading(false)
       Alert.alert('Lo siento, no pudimos realizar su publicación.')
     }
@@ -172,10 +173,12 @@ export const Publish = ({ navigation }) => {
       }}>
         {
           image ?
-          <Image
-          style={{width: 370, height: 330}}
-              source={{ uri: image }} 
+          <TouchableOpacity onPress={pickImage} style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <Image
+            style={{width: 370, height: 330}}
+            source={{ uri: image }} 
             />
+          </TouchableOpacity>
           :
           <TouchableOpacity onPress={pickImage} style={{ justifyContent: 'center', alignItems: 'center' }}>
             <Svg 

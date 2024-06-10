@@ -86,7 +86,7 @@ export const PostsItem = (props) => {
         )}
       </View>
     </TouchableNativeFeedback>
-    <Modal visible={showModal} transparent={true} animationType="slide" >
+    <Modal visible={showModal} transparent={true} animationType="fade" >
       <ModalPost 
         id={data.id} 
         post={data.post} 

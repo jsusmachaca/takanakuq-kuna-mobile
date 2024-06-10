@@ -8,30 +8,32 @@ export const styles = StyleSheet.create({
   },
   postImage: {
     maxWidth: '100%',
-    height: 280,
-    borderRadius: 20
+    minHeight: 300,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    objectFit: 'cover',
   },
   imageProfile: {
-    width: 45,
-    height: 45,
+    width: 43,
+    height: 43,
     borderRadius: 50,
-    marginRight: 10,
+    marginRight: 6,
     borderWidth: 1,
     borderColor: '#D73400',
   },
   container: {
-    margin: 5,
-    padding: 10,
+    margin: 4,
+    padding: 8,
     borderColor: '#000',
     borderRadius: 10,
     backgroundColor: "#fff"
   },
   username: {
     fontWeight: "bold",
-    fontSize: 18.5
+    fontSize: 17
   },
   date: {
-    fontSize: 18.5
+    fontSize: 17
   },
   showMore: {
     color: '#858585'

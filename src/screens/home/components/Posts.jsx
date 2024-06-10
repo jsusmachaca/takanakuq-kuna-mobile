@@ -25,11 +25,7 @@ export const Posts = () => {
   const onRefresh = () => {
     setRefreshing(true);
     setTimeout(() => {
-      apiClient.get(`/api/posts/all`)
-        .then(res => {
-          setData(res.data)
-        })
-        .catch(err => console.error(err))
+      fetchData()
       setRefreshing(false);
     }, 2000);
   };

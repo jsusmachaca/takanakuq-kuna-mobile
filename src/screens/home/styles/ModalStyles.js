@@ -32,8 +32,9 @@ export const styles = StyleSheet.create({
   },
   postImage: {
     maxWidth: '100%',
-    height: 280,
-    borderRadius: 20
+    height: 400,
+    borderRadius: 20,
+    objectFit: 'contain'
   },
 
   comments: {
