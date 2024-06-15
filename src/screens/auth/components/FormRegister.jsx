@@ -1,10 +1,11 @@
 import { TextInput, View, TouchableOpacity, Text, Alert, Modal, ActivityIndicator } from 'react-native' 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { styles } from '../styles/formStyles'
 import { apiClient } from '../../../utils/api/client'
 import { useSQLiteContext } from 'expo-sqlite'
+import { LoadingModal } from './LoadingModal'
 
-export const FormRegister = (props) => {
+export const FormRegister = ({ navigation }) => {
   const db = useSQLiteContext()
 
   const [isLoading, setIsLoading] = useState(false)
@@ -21,34 +22,35 @@ export const FormRegister = (props) => {
     let tempErrors = {};
 
     if (username.length === 0) {
-      tempErrors.usernameError = 'Debe escribir un Nombre de Usuario';
+      tempErrors.usernameError = 'Debe escribir un Nombre de Usuario'
     } 
     if (email.length === 0) {
-      tempErrors.emailError = 'Debe escribir un Email';
+      tempErrors.emailError = 'Debe escribir un Email'
     } 
     if (names.length === 0) {
-      tempErrors.namesError = 'Debe escribir un Nombre';
+      tempErrors.namesError = 'Debe escribir un Nombre'
     } 
     if (lastNames.length === 0) {
-      tempErrors.lastNamesError = 'Debe escribir un Apellido';
+      tempErrors.lastNamesError = 'Debe escribir un Apellido'
     } 
     if (password.length === 0) {
-      tempErrors.passwordError = 'Debe escribir una Contraseña';
+      tempErrors.passwordError = 'Debe escribir una Contraseña'
     } 
     if (password !== confirmPassword) {
-      tempErrors.confError = 'Su contraseña no coincide';
+      tempErrors.confError = 'Su contraseña no coincide'
     }
 
     setErrors(tempErrors);
   }
 
-  const handleRegister = async () => {
+  const handleRegister = useCallback(async () => {
     try {
       validations()
-      if (errors) {
-        return
+
+      if (Object.keys(errors).length >= 1) {
+        throw new Error('Credentials not provided')
       }
-      
+
       setIsLoading(true)
       const response = await apiClient.post('/api/user/register', {
         first_name: names,
@@ -58,40 +60,30 @@ export const FormRegister = (props) => {
         password: password,
         confirm_password: confirmPassword
       })
+
       if (response) {
         const loginResponse = await apiClient.post('/api/user/login', {
           username: username,
           password: password
         })
-        await db.runAsync(`INSERT INTO user (username, token) 
-        VALUES (?, ?);`, 
-        [username, loginResponse.data.access_token])
+
+        await db.runAsync(`INSERT INTO user (username, token) VALUES (?, ?);`, [
+          username, 
+          loginResponse.data.access_token
+        ])
         console.log('Insertion successfully')
-        setIsLoading(false)
-        props.navigation.navigate('Profile')
+        navigation.navigate('Profile')
       }
     } catch (err) {
+      console.error(err.response?.data || err.message)
+    } finally {
       setIsLoading(false)
-      console.error(err.response.data)
     }
-  }
+  }, [names, lastNames, username, email, password, confirmPassword, db, navigation])
 
   return (
     <View style={styles.formContainerRegister}>
-      <Modal
-        visible={isLoading}
-        transparent={true}
-        animationType="fade"
-      >
-        <View style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        }}>
-          <ActivityIndicator size="large" color="#ffffff" />
-        </View>
-      </Modal>
+      <LoadingModal isLoading={isLoading} />
 
       <View style={styles.formulario}>
         <TextInput 

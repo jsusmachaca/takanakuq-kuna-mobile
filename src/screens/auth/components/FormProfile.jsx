@@ -1,12 +1,12 @@
 import { TextInput, View, TouchableOpacity, Text, Platform, Image, Alert } from 'react-native' 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { styles } from '../styles/formStyles'
 import { apiClient } from '../../../utils/api/client'
 import defaultProfile from '../assets/avatars/default.png'
 import * as ImagePicker from 'expo-image-picker'
 import { useSQLiteContext } from 'expo-sqlite'
 
-export const FormProfile = (props) => {
+export const FormProfile = ({ navigation }) => {
   const db = useSQLiteContext()
 
   const [description, setDescription] = useState('')
@@ -33,7 +33,7 @@ export const FormProfile = (props) => {
     }
   }
   
-  const profileHandler = async () => {
+  const profileHandler = useCallback(async () => {
     try {
       const [result] = await db.getAllAsync('SELECT * FROM user')
 
@@ -55,13 +55,13 @@ export const FormProfile = (props) => {
           'Authorization': `Bearer ${result.token}`,
         },
       })
-      props.navigation.navigate('Home')
+      navigation.navigate('Home')
       console.log(response.data)
     } catch (err) {
-      console.log(err.response.data)
+      console.log(err.response?.data || err.message)
       Alert.alert('Error', err.response.data.error)
     }
-  }
+  }, [image, description, db, navigation])
 
   return (
     <View style={styles.formContainer}>
