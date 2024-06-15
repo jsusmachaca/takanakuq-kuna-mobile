@@ -54,7 +54,7 @@ export const FormLogin = ({ navigation }) => {
             <></>
         }
         <TextInput 
-          placeholder='Ingrese su nombre usuario o correo eletrónico'
+          placeholder='Nombre de usuario o correo eletrónico'
           style={[styles.loginInput, error ? { borderWidth: 1, borderColor: '#CD0A0A' } : {} ]}
           returnKeyType='next'
           autoCapitalize='none'
@@ -62,7 +62,7 @@ export const FormLogin = ({ navigation }) => {
           onChangeText={data => setUsername(data)}
         />
         <TextInput 
-          placeholder='Ingrese su contraseña'
+          placeholder='Contraseña'
           style={[styles.loginInput, error ? { borderWidth: 1, borderColor: '#CD0A0A' } : {} ]}
           autoCapitalize='none'
           secureTextEntry={true}

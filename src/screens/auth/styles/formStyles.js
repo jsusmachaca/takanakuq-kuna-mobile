@@ -89,21 +89,21 @@ export const styles = StyleSheet.create({
     fontSize: 17.5
   },
   profileImageContainer: {
-    marginTop: 30,
-    marginBottom: 20,
-    width: 200,
-    height: 200,
+    marginTop: 10,
+    marginBottom: 40,
+    width: 250,
+    height: 250,
     position: 'relative',
 
   },
   imageContainer: {
-    width: 200,
-    height: 200,
-    borderWidth: 3,
+    width: 250,
+    height: 250,
+    borderWidth: 2,
     borderRadius: 360,
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#fff',
+    borderColor: '#E94600',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -125,12 +125,12 @@ export const styles = StyleSheet.create({
     color: '#fff'
   },
   profileImage: {
-    width: 195,
-    height: 195,
+    width: 250,
+    height: 250,
   },
   coverBg: {
-    width: 195,
-    height: 195,
+    width: 250,
+    height: 250,
     position: 'absolute',
     backgroundColor: '#131313',
     opacity: .4

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { View, Text, TextInput, TouchableOpacity, Platform, Image, Alert, ActivityIndicator, Modal} from "react-native";
 import { apiClient } from "../../utils/api/client";
 import { useSQLiteContext } from "expo-sqlite";
@@ -52,7 +52,7 @@ export const Publish = ({ navigation }) => {
     navigation.navigate('Home')
   }
 
-  const handlePost = async () => {
+  const handlePost = useCallback(async () => {
     try {
       setIsLoading(true)
       let formData = new FormData()
@@ -85,15 +85,15 @@ export const Publish = ({ navigation }) => {
         setImage(null)
         setPlaceholderColor('#636363')
         setPlaceholder('¿Comparte lo que sientes?')
-        setIsLoading(false)
         navigation.navigate('Home')
       }
     } catch (err) {
       console.error(err)
-      setIsLoading(false)
       Alert.alert('Lo siento, no pudimos realizar su publicación.')
+    } finally {
+      setIsLoading(false)
     }
-  }
+  }, [post, image, db, navigation])
   
   return (
     <View>

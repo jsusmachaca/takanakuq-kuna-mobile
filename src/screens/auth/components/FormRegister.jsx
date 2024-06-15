@@ -18,39 +18,41 @@ export const FormRegister = ({ navigation }) => {
 
   const [errors, setErrors] = useState({})
   
-  const validations = () => {
+  const validations = useCallback(() => {
     let tempErrors = {};
 
-    if (username.length === 0) {
+    if (!username) {
       tempErrors.usernameError = 'Debe escribir un Nombre de Usuario'
     } 
-    if (email.length === 0) {
+    if (!email) {
       tempErrors.emailError = 'Debe escribir un Email'
     } 
-    if (names.length === 0) {
+    if (!names) {
       tempErrors.namesError = 'Debe escribir un Nombre'
     } 
-    if (lastNames.length === 0) {
+    if (!lastNames) {
       tempErrors.lastNamesError = 'Debe escribir un Apellido'
     } 
-    if (password.length === 0) {
+    if (!password) {
       tempErrors.passwordError = 'Debe escribir una Contraseña'
-    } 
+    }
+    if (!confirmPassword) {
+      tempErrors.confError = 'Debe escribir una Contraseña'
+    }
     if (password !== confirmPassword) {
       tempErrors.confError = 'Su contraseña no coincide'
     }
 
-    setErrors(tempErrors);
-  }
+    setErrors(tempErrors)
+    return Object.keys(tempErrors).length === 0
+  }, [username, email, names, lastNames, password, confirmPassword])
 
   const handleRegister = useCallback(async () => {
+    if (!validations()) {
+      return;
+    }
+
     try {
-      validations()
-
-      if (Object.keys(errors).length >= 1) {
-        throw new Error('Credentials not provided')
-      }
-
       setIsLoading(true)
       const response = await apiClient.post('/api/user/register', {
         first_name: names,

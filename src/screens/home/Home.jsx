@@ -1,4 +1,4 @@
-import { View, StatusBar } from 'react-native';
+import { View, StatusBar, Platform } from 'react-native';
 import React, { useEffect } from "react";
 import { Posts } from './components/Posts';
 import { useSQLiteContext } from 'expo-sqlite'
@@ -16,6 +16,7 @@ export const Home = ({ navigation }) => {
       }
     }
     token()
+    console.log(Platform.OS)
   }, [db, navigation])
 
   return (

@@ -5,10 +5,12 @@ import { apiClient } from '../../../utils/api/client'
 import defaultProfile from '../assets/avatars/default.png'
 import * as ImagePicker from 'expo-image-picker'
 import { useSQLiteContext } from 'expo-sqlite'
+import { LoadingModal } from './LoadingModal'
 
 export const FormProfile = ({ navigation }) => {
   const db = useSQLiteContext()
 
+  const [isLoading, setIsLoading] = useState(false)
   const [description, setDescription] = useState('')
   const [image, setImage] = useState(null)
 
@@ -35,6 +37,8 @@ export const FormProfile = ({ navigation }) => {
   
   const profileHandler = useCallback(async () => {
     try {
+      setIsLoading(true)
+      
       const [result] = await db.getAllAsync('SELECT * FROM user')
 
       let formData = new FormData();
@@ -60,11 +64,14 @@ export const FormProfile = ({ navigation }) => {
     } catch (err) {
       console.log(err.response?.data || err.message)
       Alert.alert('Error', err.response.data.error)
+    } finally {
+      setIsLoading(false)
     }
   }, [image, description, db, navigation])
 
   return (
     <View style={styles.formContainer}>
+      <LoadingModal isLoading={isLoading} />
       <View style={styles.formulario}>
         <View style={styles.profileImageContainer}>
           <View style={styles.iconAdd}>
