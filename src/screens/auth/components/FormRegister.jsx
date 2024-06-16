@@ -55,10 +55,10 @@ export const FormRegister = ({ navigation }) => {
     try {
       setIsLoading(true)
       const response = await apiClient.post('/api/user/register', {
-        first_name: names,
-        last_name: lastNames,
-        username: username,
-        email: email,
+        first_name: names.trim(),
+        last_name: lastNames.trim(),
+        username: username.trim(),
+        email: email.trim(),
         password: password,
         confirm_password: confirmPassword
       })
