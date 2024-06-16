@@ -23,12 +23,12 @@ export const Posts = () => {
   }, [])
 
   const onRefresh = () => {
-    setRefreshing(true);
+    setRefreshing(true)
     setTimeout(() => {
       fetchData()
-      setRefreshing(false);
-    }, 2000);
-  };
+      setRefreshing(false)
+    }, 2000)
+  }
 
   return (
     <>

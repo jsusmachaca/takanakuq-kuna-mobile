@@ -4,6 +4,7 @@ import { StyleSheet } from "react-native"
 export const styles = StyleSheet.create({
   commentCard: {
     margin: 10,
+    marginLeft: 13,
   },
   commentProfile: {
     display: 'flex',

@@ -21,27 +21,13 @@ export const FormRegister = ({ navigation }) => {
   const validations = useCallback(() => {
     let tempErrors = {};
 
-    if (!username) {
-      tempErrors.usernameError = 'Debe escribir un Nombre de Usuario'
-    } 
-    if (!email) {
-      tempErrors.emailError = 'Debe escribir un Email'
-    } 
-    if (!names) {
-      tempErrors.namesError = 'Debe escribir un Nombre'
-    } 
-    if (!lastNames) {
-      tempErrors.lastNamesError = 'Debe escribir un Apellido'
-    } 
-    if (!password) {
-      tempErrors.passwordError = 'Debe escribir una Contraseña'
-    }
-    if (!confirmPassword) {
-      tempErrors.confError = 'Debe escribir una Contraseña'
-    }
-    if (password !== confirmPassword) {
-      tempErrors.confError = 'Su contraseña no coincide'
-    }
+    if (!username) tempErrors.usernameError = 'Debe escribir un Nombre de Usuario'
+    if (!email) tempErrors.emailError = 'Debe escribir un Email'
+    if (!names) tempErrors.namesError = 'Debe escribir un Nombre'
+    if (!lastNames) tempErrors.lastNamesError = 'Debe escribir un Apellido'
+    if (!password) tempErrors.passwordError = 'Debe escribir una Contraseña'
+    if (!confirmPassword) tempErrors.confError = 'Debe escribir una Contraseña'
+    if (password !== confirmPassword) tempErrors.confError = 'Su contraseña no coincide'
 
     setErrors(tempErrors)
     return Object.keys(tempErrors).length === 0
@@ -65,12 +51,12 @@ export const FormRegister = ({ navigation }) => {
 
       if (response) {
         const loginResponse = await apiClient.post('/api/user/login', {
-          username: username,
+          username: username.trim(),
           password: password
         })
 
         await db.runAsync(`INSERT INTO user (username, token) VALUES (?, ?);`, [
-          username, 
+          username.trim(), 
           loginResponse.data.access_token
         ])
         console.log('Insertion successfully')

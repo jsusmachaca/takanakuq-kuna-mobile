@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Image, View, StatusBar } from 'react-native';
-import { Svg, Polygon, Line, Path, G } from 'react-native-svg';
+import { Svg, Polygon, Line, Defs, RadialGradient, Stop } from 'react-native-svg';
 
 const generateHexagonPoints = (centerX, centerY, radius) => {
   const points = []
@@ -14,37 +14,43 @@ const generateHexagonPoints = (centerX, centerY, radius) => {
 }
 
 export const AddIcon = () => {
-  const hexagonPoints = generateHexagonPoints(100, 100, 35)
+  const hexagonPoints = generateHexagonPoints(75, 75, 30)
   return (
-      <Svg width="200" height="200"
+      <Svg width="150" height="150"
         style={{
-          marginTop: -40,
+          marginTop: -20,
           padding: 0,
           transform: [{
             rotate: '90deg'
           }]
         }}
       >
+        <Defs>
+          <RadialGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <Stop offset="100%" stopColor="#FF5B13" stopOpacity="1" />
+            <Stop offset="0%" stopColor="#FF8F00" stopOpacity="1" />
+          </RadialGradient>
+        </Defs>
         <Polygon 
           points={hexagonPoints}
-          fill="#FF8F00"
+          fill="url(#grad)"
           strokeWidth="1"
         />
         <Line
-          x1="85"
-          y1="100"
-          x2="115"
-          y2="100"
+          x1="60"
+          y1="75"
+          x2="90"
+          y2="75"
           stroke="white"
-          strokeWidth="4"
+          strokeWidth="3"
         />
         <Line
-          x1="100"
-          y1="85"
-          x2="100"
-          y2="115"
+          x1="75"
+          y1="60"
+          x2="75"
+          y2="90"
           stroke="white"
-          strokeWidth="4"
+          strokeWidth="3"
         />
       </Svg>
   )

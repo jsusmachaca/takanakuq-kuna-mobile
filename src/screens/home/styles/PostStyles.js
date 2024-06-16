@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native"
 
 export const styles = StyleSheet.create({
   postText: {
-    fontSize: 22,
+    fontSize: 20,
     margin: 10
   },
   postImage: {
@@ -14,15 +14,14 @@ export const styles = StyleSheet.create({
     objectFit: 'cover',
   },
   imageProfile: {
-    width: 43,
-    height: 43,
+    width: 40,
+    height: 40,
     borderRadius: 50,
     marginRight: 6,
     borderWidth: 1,
     borderColor: '#D73400',
   },
   container: {
-    marginTop: 4,
     marginBottom: 4,
     padding: 7,
     borderColor: '#000',
@@ -38,10 +37,10 @@ export const styles = StyleSheet.create({
   },
   username: {
     fontWeight: "bold",
-    fontSize: 17
+    fontSize: 15
   },
   date: {
-    fontSize: 17
+    fontSize: 15
   },
   showMore: {
     color: '#858585'
@@ -61,7 +60,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     position: 'static',
-    bottom: 3,
+    bottom: 5,
     backgroundColor: 'rgba(255, 143, 0, .8)',
     borderRadius: 20,
     padding: 8,

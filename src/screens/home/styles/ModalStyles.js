@@ -42,7 +42,6 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     paddingTop: 10,
     paddingBottom: 10,
-    paddingLeft: 3,
     marginTop: 10
   },
   textCommmentContainer: {
@@ -56,5 +55,15 @@ export const styles = StyleSheet.create({
   textComment: {
     paddingBottom: 10,
     fontSize: 15
-  }
+  },
+  commentInput: {
+    backgroundColor: '#BEBEBE',
+    borderRadius: 15,
+    padding: 7,
+    fontSize: 16,
+    margin: 0,
+    marginHorizontal: 10,
+    marginTop: 10,
+    marginBottom: 0,
+  },
 })

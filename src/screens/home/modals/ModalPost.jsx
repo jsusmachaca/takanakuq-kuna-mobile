@@ -1,16 +1,21 @@
 import { useEffect, useState } from "react";
-import { Text, Image, View, TouchableOpacity, ScrollView, Pressable } from "react-native";
+import { Text, Image, View, TouchableOpacity, ScrollView, Pressable, TextInput, RefreshControl } from "react-native";
 import { styles } from "../styles/ModalStyles";
 import { CommentItem } from "../components/CommentItem";
 import { ModalProfileHeader } from "../components/ModalProfileHeader";
 import { apiClient } from "../../../utils/api/client";
+import { useSQLiteContext } from "expo-sqlite";
 
 
 export const ModalPost = (props) => {
-  const { onShowModal, post_id } = props
-  const [ comments, setComments ] = useState([])
+  const db = useSQLiteContext()
 
-  useEffect(() => {
+  const { onShowModal, post_id } = props
+  const [comment, setComment] = useState('')
+  const [ comments, setComments ] = useState([])
+  const [refreshing, setRefreshing] = useState(false)
+
+  const fetchData = () => {
     apiClient.get(`/api/comments/get-comments?post=${props.id}`)
       .then(res => {
         setComments(res.data)
@@ -18,7 +23,38 @@ export const ModalPost = (props) => {
       .catch(err => {
         console.error(err)
       })
+  }
+
+  useEffect(() => {
+    fetchData()
   }, [])
+
+  const commentHandler = async () => {
+    try {
+      const [result] = await db.getAllAsync('SELECT * FROM user')
+
+      await apiClient.post(`/api/comments/publish-comment?post=${props.id}`, {
+        comment: comment
+      }, {
+        headers: {
+          Authorization: `Bearer ${result.token}`
+        }
+      })
+    } catch (err) {
+      console.log(err.response.data)
+    } finally {
+      onRefresh()
+    }
+  }
+
+  const onRefresh = () => {
+    setRefreshing(true)
+    setTimeout(() => {
+      fetchData()
+      setComment('')
+      setRefreshing(false)
+    }, 2000)
+  }
 
   return (
     <View
@@ -40,7 +76,12 @@ export const ModalPost = (props) => {
           date_publish={props.date_publish} 
         />
 
-        <ScrollView style={styles.scrollView}>
+        <ScrollView style={styles.scrollView} refreshControl={
+          <RefreshControl 
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }>
           <View>
             <View
               style={styles.container}
@@ -79,6 +120,12 @@ export const ModalPost = (props) => {
                       </Text>
                     </View>
                 }
+                <TextInput
+                  placeholder="Escribe un comentario"
+                  onChangeText={setComment}
+                  returnKeyType="done"
+                  style={styles.commentInput}
+                />
               </View>
           </View>
         </ScrollView>
