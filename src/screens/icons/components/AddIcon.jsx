@@ -19,6 +19,7 @@ export const AddIcon = () => {
       <Svg width="200" height="200"
         style={{
           marginTop: -40,
+          padding: 0,
           transform: [{
             rotate: '90deg'
           }]
@@ -26,7 +27,7 @@ export const AddIcon = () => {
       >
         <Polygon 
           points={hexagonPoints}
-          fill="orange"
+          fill="#FF8F00"
           strokeWidth="1"
         />
         <Line

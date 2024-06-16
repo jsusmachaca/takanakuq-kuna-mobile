@@ -22,7 +22,7 @@ export const Home = ({ navigation }) => {
   return (
     <>
       <StatusBar />
-      <View style={{backgroundColor: "#D6D6D6", height: '100%'}}>
+      <View style={{backgroundColor: "#f1e9de", height: '100%'}}>
         <Posts />
       </View>
     </>

@@ -17,7 +17,7 @@ export const HeartIcon = () => {
           strokeLinejoin='round'
           strokeWidth='3'
           stroke='#FF8F00'
-          />
+        />
       </Svg>
   )
 }

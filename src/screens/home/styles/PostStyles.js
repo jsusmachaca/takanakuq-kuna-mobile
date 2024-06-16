@@ -22,11 +22,19 @@ export const styles = StyleSheet.create({
     borderColor: '#D73400',
   },
   container: {
-    margin: 4,
-    padding: 8,
+    marginTop: 4,
+    marginBottom: 4,
+    padding: 7,
     borderColor: '#000',
-    borderRadius: 10,
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
+    shadowOffset: {
+      width: 0,
+      height: 5
+    },
+    shadowOpacity: 1,
+    shadowRadius: 5.65,
+    elevation: 7,
+    position: 'relative'
   },
   username: {
     fontWeight: "bold",
@@ -46,5 +54,29 @@ export const styles = StyleSheet.create({
   profile: {
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  comments: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    position: 'static',
+    bottom: 3,
+    backgroundColor: 'rgba(255, 143, 0, .8)',
+    borderRadius: 20,
+    padding: 8,
+    marginTop: 18,
+    shadowOffset: {
+      width: 0,
+      height: 5
+    },
+    shadowOpacity: 1,
+    shadowRadius: 5.65,
+    elevation: 7,
+  },
+  commentsText: {
+    fontWeight: 'bold',
+    fontSize: 15,
+    marginLeft: 4
   }
 })
