@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Text, Image, View, TouchableOpacity, ScrollView, Pressable, TextInput, RefreshControl } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { Text, Image, View, TouchableOpacity, TextInput, RefreshControl, ActivityIndicator, FlatList, KeyboardAvoidingView, Platform } from "react-native";
 import { styles } from "../styles/ModalStyles";
 import { CommentItem } from "../components/CommentItem";
 import { ModalProfileHeader } from "../components/ModalProfileHeader";
@@ -14,15 +14,19 @@ export const ModalPost = (props) => {
   const [comment, setComment] = useState('')
   const [ comments, setComments ] = useState([])
   const [refreshing, setRefreshing] = useState(false)
+  const [loading, setLoading] = useState(true)
 
-  const fetchData = () => {
-    apiClient.get(`/api/comments/get-comments?post=${props.id}`)
-      .then(res => {
-        setComments(res.data)
-      })
-      .catch(err => {
-        console.error(err)
-      })
+  const fetchData = async () => {
+    try {
+      const response = await apiClient.get(`/api/comments/get-comments?post=${props.id}`)
+      if (response) {
+        setComments(response.data)
+      }
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -50,14 +54,32 @@ export const ModalPost = (props) => {
   const onRefresh = () => {
     setRefreshing(true)
     setTimeout(() => {
-      fetchData()
-      setComment('')
-      setRefreshing(false)
+      fetchData().finally(() => {
+        setComment('')
+        setRefreshing(false)
+      })
     }, 2000)
   }
 
+  const renderItem = useCallback(({ item }) => (
+    <CommentItem 
+      key={item.id}
+      id={item.id}
+      profile_image={item.profile_image}
+      username={item.username}
+      comment={item.comment}
+    />
+  ), [])
+
+  const keyExtractor = useCallback((item) => item.id.toString(), [])
+
+  if (loading) {
+    return <ActivityIndicator size="large" />;
+  }
+
   return (
-    <View
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.modalBackground}
     >
       <TouchableOpacity onPress={() => onShowModal(false)} style={{ marginBottom: 10 }}>
@@ -76,18 +98,60 @@ export const ModalPost = (props) => {
           date_publish={props.date_publish} 
         />
 
-        <ScrollView style={styles.scrollView} refreshControl={
-          <RefreshControl 
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />
-        }>
+        <FlatList 
+          data={comments}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
+          style={styles.scrollView} 
+          refreshControl={
+            <RefreshControl 
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }
+          ListHeaderComponent={() => (
+            <View key={props.id} style={styles.container}>
+              <Text style={styles.posts}>{props.post}</Text>
+              {
+                props.post_image ? (
+                  <Image
+                    style={styles.postImage}
+                    source={{
+                      uri: props.post_image
+                    }}
+                  />
+                ) : <></>
+              }
+            </View>
+            
+          )}
+          ListFooterComponent={() => (
+            <View style={styles.comments}>
+              {comments.length === 0 && (
+                <View style={styles.textCommmentContainer}>
+                  <Text style={styles.textComment}>Aún no hay comentarios</Text>
+                </View>
+              )}
+              <TextInput
+                placeholder="Escribe un comentario"
+                value={comment}
+                onChangeText={setComment}
+                style={styles.commentInput}
+              />
+            </View>
+          )}
+        />
+      </View>
+    </KeyboardAvoidingView>
+  )
+}
+
+/*
           <View>
             <View
               style={styles.container}
               key={props.id}
             >
-
               <Text style={styles.posts}>{props.post}</Text>
               {
                 props.post_image ?
@@ -128,8 +192,4 @@ export const ModalPost = (props) => {
                 />
               </View>
           </View>
-        </ScrollView>
-      </View>
-    </View>
-  )
-}
+          */

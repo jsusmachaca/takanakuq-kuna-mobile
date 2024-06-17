@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, memo } from "react"
 import { View, Text, Image, TouchableNativeFeedback, Modal } from "react-native"
 import { ModalPost } from '../modals/ModalPost.jsx';
 import { styles } from "../styles/PostStyles.js";
@@ -14,7 +14,7 @@ import spider from '../assets/avatars/spider.avatar.png'
 import kactus from '../assets/avatars/kactus.avatar.png'
 
 
-export const PostsItem = (props) => {
+export const PostsItem = memo((props) => {
   const { data } = props
 
   const [ showModal, setVisible ] = useState(false)
@@ -127,4 +127,4 @@ export const PostsItem = (props) => {
     </Modal>
     </>
   )
-}
+})

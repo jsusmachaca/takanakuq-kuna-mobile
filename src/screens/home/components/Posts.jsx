@@ -1,13 +1,12 @@
-import { useCallback } from "react";
 import { View, Text, FlatList, Image, RefreshControl } from "react-native"
 import { apiClient } from "../../../utils/api/client"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { PostsItem } from "./PostsItem"
 
 
 export const Posts = () => {
   const [refreshing, setRefreshing] = useState(false)
-  const [mostData, setData] = useState({})
+  const [data, setData] = useState({})
 
   const fetchData = async () => {
     try {
@@ -30,6 +29,8 @@ export const Posts = () => {
     }, 2000)
   }
 
+  const renderItem = useCallback(({ item }) => <PostsItem data={item} />, [])
+
   return (
     <>
     <FlatList
@@ -44,10 +45,12 @@ export const Posts = () => {
           onRefresh()
         } 
       }}
-      data={mostData}
-      renderItem={({ item: data }) => (
-        <PostsItem data={data} />
-      )}
+      data={data}
+      renderItem={renderItem}
+      keyExtractor={item => item.id.toString()}
+      initialNumToRender={10}
+      maxToRenderPerBatch={10}
+      windowSize={5}
     />
     </>
   )
