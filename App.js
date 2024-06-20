@@ -15,8 +15,6 @@ import initDatabase from './src/utils/database/db';
 import { SQLiteProvider } from 'expo-sqlite';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { View, Text, Image, TouchableOpacity } from 'react-native';
-import { Svg, Path } from 'react-native-svg';
 import { UserDetailIcon } from './src/icons/components/UserDetailsIcon';
 import { UserDetails } from './src/screens/userDetails/UserDetails';
 import { CallIcon } from './src/icons/components/CallIcon';
@@ -24,7 +22,6 @@ import { Header } from './src/Layouts/Header';
 
 const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
-
 
 const HomeTabs = () => (
     <Tab.Navigator screenOptions={{
@@ -63,7 +60,6 @@ const HomeTabs = () => (
           tabBarStyle: { display: 'none' },
           headerShown: false
         }}
-
       />
       <Tab.Screen 
         name='Recipes'
@@ -99,17 +95,17 @@ export default function App() {
           <Stack.Screen 
             name='Login'
             component={Login}
-            options={{ headerShown: false, title: 'Login' }}
+            options={{ headerShown: false }}
           />
           <Stack.Screen 
             name='Register'
             component={Register}
-            options={{ headerShown: false, title: 'Register' }}
+            options={{ headerShown: false }}
           />
           <Stack.Screen 
             name='Profile'
             component={Profile}
-            options={{ headerShown: false, title: 'Profile' }}
+            options={{ headerShown: false }}
           />
         </Stack.Navigator>
       </NavigationContainer>

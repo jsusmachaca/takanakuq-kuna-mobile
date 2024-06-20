@@ -17,11 +17,15 @@ export const Login = ({ navigation }) => {
 
   useEffect(() => {
     const token = async () => {
-      const [result] = await db.getAllAsync('SELECT * FROM user')
-      if (result && result.username && result.token) {
-        navigation.navigate('Home')
-      } else {
-        console.log(result)
+      try {
+        const [result] = await db.getAllAsync('SELECT * FROM user')
+        if (result && result.username && result.token) {
+          navigation.navigate('Home')
+        } else {
+          console.error('User not created')
+        }
+      } catch (err) {
+        console.error(err)
       }
     }
     token()

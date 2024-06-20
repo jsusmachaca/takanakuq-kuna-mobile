@@ -15,7 +15,6 @@ import sheep from '../assets/avatars/sheep.avatar.png'
 import spider from '../assets/avatars/spider.avatar.png'
 import kactus from '../assets/avatars/kactus.avatar.png'
 
-
 export const PostsItem = memo((props) => {
   const { data } = props
 

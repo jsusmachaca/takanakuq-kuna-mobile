@@ -8,10 +8,14 @@ export const Home = ({ navigation }) => {
 
   useEffect(() => {
     const token = async () => {
-      const [result] = await db.getAllAsync('SELECT * FROM user')
-      if (result && result.username && result.token) {
-      } else {
-        navigation.navigate('Login')
+      try {
+        const [result] = await db.getAllAsync('SELECT * FROM user')
+        if (result && result.username && result.token) {
+        } else {
+          navigation.navigate('Login')
+        }
+      } catch (err) {
+        console.error(err.message)
       }
     }
     token()

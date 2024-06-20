@@ -32,7 +32,7 @@ export const UserDetails = () => {
       })
       setPostData(res.data)
     } catch (err) {
-      console.error(err.response)
+      console.error(err.message)
     }
   }
   
@@ -47,6 +47,7 @@ export const UserDetails = () => {
       })
       setUserDetails(res.data)
     } catch (err) {
+      console.error(err.message)
     } finally {
       setLoading(false)
     }
@@ -73,7 +74,7 @@ export const UserDetails = () => {
               console.log(res.data)
             }
           } catch (err) {
-            console.log('bro ' + err.response.data)
+            console.error(err.response.data)
           } finally {
             onRefresh()
           }

@@ -21,24 +21,23 @@ export const Header = ({ navigation }) => {
       setUserInfo(res.data)
       await db.runAsync('UPDATE user SET id=?;', [res.data.id])
     } catch (err) {
-      console.log(err.response.data)
+      console.error(err.message)
     }
   }, [userInfo, db])
-
-  useEffect(() => {
-    fetchingUserInfo()
-  }, [])
 
   const handlerSelect = async () => {
     try {
       const [result] = await db.getAllAsync('DELETE FROM user')
-      console.log('lograo' + result)
+      console.log('User Deleted' + result)
       navigation.navigate('Login')
     } catch (err) {
-      console.log(err)
+      console.err(err.message)
     }
   }
 
+  useEffect(() => {
+    fetchingUserInfo()
+  }, [])
   return (
     <View style={styles.headerContainer}>
       <Image
