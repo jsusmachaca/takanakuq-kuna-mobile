@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
   username: {
     fontWeight: "bold",
     fontSize: 19,
-    marginLeft: 8
+    marginLeft: 8,
   },
 
   profile_header: {
@@ -44,7 +44,15 @@ export const styles = StyleSheet.create({
 
   date: {
     fontSize: 18.5,
-    marginRight: 10,
+    marginLeft: 8,
     color: '#969696'
+  },
+  closeModal: {
+    marginRight: 5,
+    width: 40,
+    height: 40,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 })

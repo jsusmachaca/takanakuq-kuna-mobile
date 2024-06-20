@@ -28,7 +28,8 @@ export const styles = StyleSheet.create({
   },
   posts: {
     fontSize: 22.6,
-    margin: 10
+    margin: 10,
+    color: '#404040'
   },
   postImage: {
     maxWidth: '100%',
@@ -36,13 +37,12 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     objectFit: 'contain'
   },
-
   comments: {
-    backgroundColor: "#E9E9E9",
+    backgroundColor: "#EEEEEE",
     borderRadius: 20,
     paddingTop: 10,
     paddingBottom: 10,
-    marginTop: 10
+    marginTop: 65,
   },
   textCommmentContainer: {
     display: 'flex',
@@ -52,18 +52,24 @@ export const styles = StyleSheet.create({
     padding: 0,
     margin: 0,
   },
+  inputContainer: { 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    flexDirection: 'row',
+    margin: 0,
+    marginHorizontal: 10,
+    marginTop: 10,
+    marginBottom: 0,
+  },
   textComment: {
     paddingBottom: 10,
     fontSize: 15
   },
   commentInput: {
-    backgroundColor: '#BEBEBE',
+    backgroundColor: '#C8C8C8',
     borderRadius: 15,
     padding: 7,
-    fontSize: 16,
-    margin: 0,
-    marginHorizontal: 10,
-    marginTop: 10,
-    marginBottom: 0,
+    fontSize: 18,
+    width: 280
   },
 })

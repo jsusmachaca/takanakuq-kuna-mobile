@@ -4,7 +4,8 @@ import { StyleSheet } from "react-native"
 export const styles = StyleSheet.create({
   postText: {
     fontSize: 20,
-    margin: 10
+    margin: 10,
+    color: '#404040'
   },
   postImage: {
     maxWidth: '100%',
@@ -26,24 +27,23 @@ export const styles = StyleSheet.create({
     padding: 7,
     borderColor: '#000',
     backgroundColor: "#fff",
-    shadowOffset: {
-      width: 0,
-      height: 5
-    },
-    shadowOpacity: 1,
-    shadowRadius: 5.65,
-    elevation: 7,
     position: 'relative'
   },
   username: {
     fontWeight: "bold",
-    fontSize: 15
+    fontSize: 17
   },
   date: {
-    fontSize: 15
+    fontSize: 17,
+    color: '#4D4D4D'
   },
   showMore: {
     color: '#858585'
+  },
+  date_nameContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   date_name: {
     flexDirection: 'row',

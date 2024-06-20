@@ -4,6 +4,8 @@ import { ModalPost } from '../modals/ModalPost.jsx';
 import { styles } from "../styles/PostStyles.js";
 import { apiClient } from "../../../utils/api/client.js";
 import { Svg, Path } from "react-native-svg";
+import moment from "moment"
+import 'moment-duration-format'
 
 import defaultProfile from '../assets/avatars/default.png'
 import avocado from '../assets/avatars/avocado.avatar.png'
@@ -37,14 +39,32 @@ export const PostsItem = memo((props) => {
     return image
   }
 
+  const getRelativeTime = (date) => {
+    const now = moment();
+    const postDate = moment.utc(date);
+    const duration = moment.duration(now.diff(postDate));
+  
+    if (duration.asMinutes() < 60) {
+      return `Hace ${Math.floor(duration.asMinutes())}m`
+    } else if (duration.asHours() < 24) {
+      return `Hace ${Math.floor(duration.asHours())}h`
+    } else if (duration.asDays() < 30) {
+      return `Hace ${Math.floor(duration.asDays())}d`
+    } else if (duration.asMonths() < 12) {
+      return `Hace ${Math.floor(duration.asMonths())}mo`
+    } else {
+      return postDate.format('DD MMM YYYY')
+    }
+  }
+
   return (
     <>
     <TouchableNativeFeedback onPress={ () => setVisible(true) }>
       <View
         key={data.id}
-        style={styles.container}
+        style={[styles.container, props.style ]}
       >
-        <View style={styles.date_name}>
+        <View style={styles.date_nameContainer}>
           <View style={styles.date_name}>
             <Image style={styles.imageProfile}
               source={
@@ -59,7 +79,7 @@ export const PostsItem = memo((props) => {
             />
             <Text style={styles.username}>{data.username}</Text>
           </View>
-          <Text style={styles.date}>{data.date_publish.slice(0, 10).replace(/-/g, '/')}</Text>
+          <Text style={styles.date}>{getRelativeTime(data.date_publish)}</Text>
         </View>
         {data.post && data.post_image && (
           <View>

@@ -3,7 +3,6 @@ import { apiClient } from "../../../utils/api/client"
 import { useState, useEffect, useCallback } from "react"
 import { PostsItem } from "./PostsItem"
 
-
 export const Posts = () => {
   const [refreshing, setRefreshing] = useState(false)
   const [data, setData] = useState({})
@@ -29,7 +28,20 @@ export const Posts = () => {
     }, 2000)
   }
 
-  const renderItem = useCallback(({ item }) => <PostsItem data={item} />, [])
+  const renderItem = useCallback(({ item }) => (
+    <PostsItem 
+      data={item} 
+      style={{
+        shadowOffset: {
+          width: 0,
+          height: 5
+        },
+        shadowOpacity: 1,
+        shadowRadius: 5.65,
+        elevation: 6,
+      }} 
+    />
+  ), [])
 
   return (
     <>

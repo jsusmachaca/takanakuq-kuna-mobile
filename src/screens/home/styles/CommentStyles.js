@@ -14,7 +14,11 @@ export const styles = StyleSheet.create({
     padding: 0,
   },
   commentName: {
-    fontSize: 17,
+    fontSize: 18,
+  },
+  commentDate: {
+    fontSize: 16,
+    color: '#4D4D4D'
   },
   commentImageProfile: {
     width: 35,
@@ -24,11 +28,9 @@ export const styles = StyleSheet.create({
     borderColor: '#D73400',
     marginRight: 9
   },
-  comment: {
-  },
   commentText: {
-    marginTop: -10,
-    fontSize: 18,
+    marginTop: -7,
+    fontSize: 19,
     fontWeight: '300',
     paddingHorizontal: 25,
     marginLeft: 16

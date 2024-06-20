@@ -1,29 +1,29 @@
-import { View, Text, Image, TouchableOpacity } from 'react-native';
-import { Svg, Path } from 'react-native-svg';
+import { View, Image } from 'react-native';
 import { useEffect, useState, useCallback } from "react"
 import { apiClient } from "../utils/api/client"
 import { useSQLiteContext } from "expo-sqlite"
 import RNPickerSelect from "react-native-picker-select"
-import logo from '../../assets/logo.5.png'
-
+import logo from '../../assets/logoNombreHorizontal3.png'
+import { styles } from './styles/header'
 
 export const Header = ({ navigation }) => {
   const db = useSQLiteContext()
   const [userInfo, setUserInfo] = useState({})
 
-  const fetchingUserInfo = async () => {
+  const fetchingUserInfo = useCallback(async () => {
     try {
       const [result] = await db.getAllAsync('SELECT * FROM user')
-      const res = await apiClient.get(`/api/user/data?username=${result.username}`, {
+      const res = await apiClient.get('/api/user/data', {
         headers: {
           Authorization: `Bearer ${result.token}`
         }
       })
       setUserInfo(res.data)
+      await db.runAsync('UPDATE user SET id=?;', [res.data.id])
     } catch (err) {
       console.log(err.response.data)
     }
-  }
+  }, [userInfo, db])
 
   useEffect(() => {
     fetchingUserInfo()
@@ -40,12 +40,10 @@ export const Header = ({ navigation }) => {
   }
 
   return (
-    <View style={{justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', width: '100%', paddingHorizontal: 10, backgroundColor: '#fff'}}>
+    <View style={styles.headerContainer}>
       <Image
         source={logo}
-        width={10}
-        height={10}
-        style={{ width: 70, height: 60, marginLeft: 1 }}
+        style={styles.logo}
       />
       <RNPickerSelect
         onValueChange={() => handlerSelect()}
@@ -53,13 +51,9 @@ export const Header = ({ navigation }) => {
           { label: 'Cerrar sesión', value: 'signOut' }
         ]}
         placeholder={{}}
-        style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        style={styles.picker}>
         <Image 
-          style={{
-            width: 45,
-            height: 45,
-            borderRadius: 360
-          }} 
+          style={styles.imageProfile} 
           source={{ uri: userInfo.profile_image }}
         />
       </RNPickerSelect>

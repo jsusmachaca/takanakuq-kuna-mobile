@@ -1,5 +1,7 @@
 import { View, Text, Image } from "react-native"
 import { styles } from "../styles/CommentStyles"
+import moment from "moment";
+import 'moment-duration-format'
 
 import defaultProfile from '../assets/avatars/default.png'
 import avocado from '../assets/avatars/avocado.avatar.png'
@@ -18,22 +20,43 @@ export const CommentItem = (props) => {
     return image
   }
 
+
+  const getRelativeTime = (date) => {
+    const now = moment();
+    const postDate = moment.utc(date);
+    const duration = moment.duration(now.diff(postDate));
+  
+    if (duration.asMinutes() < 60) {
+      return `Hace ${Math.floor(duration.asMinutes())}m`
+    } else if (duration.asHours() < 24) {
+      return `Hace ${Math.floor(duration.asHours())}h`
+    } else if (duration.asDays() < 30) {
+      return `Hace ${Math.floor(duration.asDays())}d`
+    } else if (duration.asMonths() < 12) {
+      return `Hace ${Math.floor(duration.asMonths())}mo`
+    } else {
+      return postDate.format('DD MMM YYYY')
+    }
+  }
+
   return (
     <View style={styles.commentCard}>
       <View style={styles.commentProfile}>
         <Image style={styles.commentImageProfile}
           source={
-            props.profile_image
+            props.profile_image != null
               ?
               {
                 uri: props.profile_image
               }
               :
-              randomAvatars()
-
+            randomAvatars()
           }
         />
-        <Text style={styles.commentName}>{props.username}</Text>
+        <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', width: '100%', paddingRight: 50 }}>
+          <Text style={styles.commentName}>{ props.username }</Text>
+          <Text style={styles.commentDate}>{ getRelativeTime(props.date) }</Text>
+        </View>
       </View>
       <Text style={styles.commentText}>
         {props.content}

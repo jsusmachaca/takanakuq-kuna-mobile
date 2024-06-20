@@ -1,37 +1,32 @@
 import { useCallback, useEffect, useState } from "react";
-import { Text, Image, View, TouchableOpacity, TextInput, RefreshControl, ActivityIndicator, FlatList, KeyboardAvoidingView, Platform } from "react-native";
+import { Text, Image, View, TouchableOpacity, TextInput, RefreshControl, ActivityIndicator, ScrollView } from "react-native";
 import { styles } from "../styles/ModalStyles";
 import { CommentItem } from "../components/CommentItem";
 import { ModalProfileHeader } from "../components/ModalProfileHeader";
 import { apiClient } from "../../../utils/api/client";
 import { useSQLiteContext } from "expo-sqlite";
-
+import { Svg, Path } from "react-native-svg";
 
 export const ModalPost = (props) => {
   const db = useSQLiteContext()
 
-  const { onShowModal, post_id } = props
+  const { onShowModal } = props
+  const [disableButton, setDisableButton] = useState(true)
   const [comment, setComment] = useState('')
   const [ comments, setComments ] = useState([])
   const [refreshing, setRefreshing] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const response = await apiClient.get(`/api/comments/get-comments?post=${props.id}`)
-      if (response) {
-        setComments(response.data)
-      }
+      setComments(response.data)
     } catch (err) {
       console.error(err)
     } finally {
       setLoading(false);
     }
-  }
-
-  useEffect(() => {
-    fetchData()
-  }, [])
+  }, [comments])
 
   const commentHandler = async () => {
     try {
@@ -51,107 +46,48 @@ export const ModalPost = (props) => {
     }
   }
 
+  const onChangeText = (data) => {
+    setDisableButton(false)
+    setComment(data)
+  }
+
   const onRefresh = () => {
     setRefreshing(true)
     setTimeout(() => {
       fetchData().finally(() => {
         setComment('')
+        setDisableButton(true)
         setRefreshing(false)
       })
     }, 2000)
   }
 
-  const renderItem = useCallback(({ item }) => (
-    <CommentItem 
-      key={item.id}
-      id={item.id}
-      profile_image={item.profile_image}
-      username={item.username}
-      comment={item.comment}
-    />
-  ), [])
-
-  const keyExtractor = useCallback((item) => item.id.toString(), [])
-
-  if (loading) {
-    return <ActivityIndicator size="large" />;
-  }
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    <View
       style={styles.modalBackground}
     >
-      <TouchableOpacity onPress={() => onShowModal(false)} style={{ marginBottom: 10 }}>
-        <View style={styles.closeModal}>
-          <Text>❌</Text>
-        </View>
-      </TouchableOpacity>
-
       <View
         style={styles.modalPostBackground}
       >
-
         <ModalProfileHeader 
           profile_image={props.profile_image} 
           username={props.username} 
           date_publish={props.date_publish} 
+          onShowModal={() => onShowModal(false)}
         />
 
-        <FlatList 
-          data={comments}
-          renderItem={renderItem}
-          keyExtractor={keyExtractor}
-          style={styles.scrollView} 
-          refreshControl={
-            <RefreshControl 
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-            />
-          }
-          ListHeaderComponent={() => (
-            <View key={props.id} style={styles.container}>
-              <Text style={styles.posts}>{props.post}</Text>
-              {
-                props.post_image ? (
-                  <Image
-                    style={styles.postImage}
-                    source={{
-                      uri: props.post_image
-                    }}
-                  />
-                ) : <></>
-              }
-            </View>
-            
-          )}
-          ListFooterComponent={() => (
-            <View style={styles.comments}>
-              {comments.length === 0 && (
-                <View style={styles.textCommmentContainer}>
-                  <Text style={styles.textComment}>Aún no hay comentarios</Text>
-                </View>
-              )}
-              <TextInput
-                placeholder="Escribe un comentario"
-                value={comment}
-                onChangeText={setComment}
-                style={styles.commentInput}
-              />
-            </View>
-          )}
-        />
-      </View>
-    </KeyboardAvoidingView>
-  )
-}
-
-/*
+        <ScrollView style={styles.scrollView} refreshControl={
+          <RefreshControl 
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }>
           <View>
-            <View
-              style={styles.container}
-              key={props.id}
-            >
+            <View style={styles.container} key={props.id}>
               <Text style={styles.posts}>{props.post}</Text>
               {
                 props.post_image ?
@@ -165,31 +101,59 @@ export const ModalPost = (props) => {
                   <></>
               }
             </View>
-
               <View style={styles.comments}>
-                { comments.length > 0 ?
-                    comments.map(comment => (
-                      <CommentItem
-                        key={comment.id}
-                        id={comment.id}
-                        profile_image={comment.profile_image} 
-                        username={comment.username}
-                        content={comment.comment}
+                {loading ? <ActivityIndicator size="large" color='#000' /> : (
+                  comments.length > 0 ?
+                      comments.map(comment => (
+                        <CommentItem
+                          key={comment.id}
+                          id={comment.id}
+                          profile_image={comment.profile_image} 
+                          username={comment.username}
+                          content={comment.comment}
+                          date={comment.date}
+                        />
+                      ))
+                    :
+                      <View style={styles.textCommmentContainer}>
+                        <Text style={styles.textComment}>
+                          Aún no hay comentarios
+                        </Text>
+                      </View>
+                )}
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    placeholder="Escribe un comentario"
+                    value={comment}
+                    onChangeText={data => onChangeText(data)}
+                    returnKeyType="done"
+                    style={styles.commentInput}
+                  />
+                  <TouchableOpacity 
+                    style={{ width: 50 }}
+                    onPress={commentHandler}
+                    disabled={disableButton}
+                  >
+                    <Svg 
+                      viewBox="0 0 48 48" 
+                      width="35"
+                      height="35" 
+                      fill="#000"
+                      style={{
+                        marginLeft: 13
+                      }}
+                    >
+                      <Path
+                        d="M4.02 42l41.98-18-41.98-18-.02 14 30 4-30 4z"
+                        fill="#E94600"
                       />
-                    ))
-                  :
-                    <View style={styles.textCommmentContainer}>
-                      <Text style={styles.textComment}>
-                        Aún no hay comentarios
-                      </Text>
-                    </View>
-                }
-                <TextInput
-                  placeholder="Escribe un comentario"
-                  onChangeText={setComment}
-                  returnKeyType="done"
-                  style={styles.commentInput}
-                />
+                    </Svg>
+                  </TouchableOpacity>
+                </View>
               </View>
           </View>
-          */
+        </ScrollView>
+      </View>
+    </View>
+  )
+}

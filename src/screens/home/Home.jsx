@@ -1,4 +1,4 @@
-import { View, StatusBar, Platform } from 'react-native';
+import { View, StatusBar, Platform, ImageBackground } from 'react-native';
 import React, { useEffect } from "react";
 import { Posts } from './components/Posts';
 import { useSQLiteContext } from 'expo-sqlite'
@@ -16,15 +16,14 @@ export const Home = ({ navigation }) => {
       }
     }
     token()
-    console.log(Platform.OS)
   }, [db, navigation])
 
   return (
     <>
       <StatusBar />
-      <View style={{backgroundColor: "#f1e9de", height: '100%'}}>
+      <ImageBackground source={require('./assets/bg.png')} style={{ height: '100%' }}>
         <Posts />
-      </View>
+      </ImageBackground>
     </>
   )
 }
