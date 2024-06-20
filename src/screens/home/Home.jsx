@@ -11,7 +11,6 @@ export const Home = ({ navigation }) => {
       const [result] = await db.getAllAsync('SELECT * FROM user')
       if (result && result.username && result.token) {
       } else {
-        console.log(result)
         navigation.navigate('Login')
       }
     }
