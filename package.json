@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
+    "start": "sed -i \"s/^REACT_NATIVE_PACKAGER_HOSTNAME=.*/REACT_NATIVE_PACKAGER_HOSTNAME=$(ifconfig wlp0s20f3 | grep 'inet ' | awk '{print $2}')/\" .env; expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web"

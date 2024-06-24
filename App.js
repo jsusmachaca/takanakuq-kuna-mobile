@@ -1,9 +1,10 @@
 import { Home } from './src/screens/home/Home';
 import { Publish } from './src/screens/Publish/Publish';
-
 import { Login } from './src/screens/auth/Login';
 import { Register } from './src/screens/auth/Register';
 import { Profile } from './src/screens/auth/Profile';
+import { Calls } from './src/screens/calls/Calls';
+import { Recipes } from './src/screens/recipes/Recipes';
 
 import { HomeIcon } from './src/icons/components/HomeIcon';
 import { AddIcon } from './src/icons/components/AddIcon';
@@ -43,10 +44,10 @@ const HomeTabs = () => (
       />
       <Tab.Screen 
         name='Calls'
-        component={UserDetails}
+        component={Calls}
         options={{
           tabBarIcon: ({ focused }) => (
-            <CallIcon color={focused ? '#3E3E3E': 'none'} />
+            <CallIcon color={focused ? '#151515': 'none'} />
           )
         }}
       />
@@ -63,7 +64,7 @@ const HomeTabs = () => (
       />
       <Tab.Screen 
         name='Recipes'
-        component={Home}
+        component={Recipes}
         options={{
           tabBarIcon: ({ focused }) => (
             <HeartIcon color={focused ? '#151515': 'none'} />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from "react"
+import React, { useState, useEffect, memo, Fragment } from "react"
 import { View, Text, Image, TouchableNativeFeedback, Modal } from "react-native"
 import { ModalPost } from '../modals/ModalPost.jsx';
 import { styles } from "../styles/PostStyles.js";
@@ -57,7 +57,7 @@ export const PostsItem = memo((props) => {
   }
 
   return (
-    <>
+    <Fragment>
     <TouchableNativeFeedback onPress={ () => setVisible(true) }>
       <View
         key={data.id}
@@ -144,6 +144,6 @@ export const PostsItem = memo((props) => {
         onShowModal={setVisible}
       />
     </Modal>
-    </>
+    </Fragment>
   )
 })
