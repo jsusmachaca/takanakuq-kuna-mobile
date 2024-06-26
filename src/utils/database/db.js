@@ -3,10 +3,12 @@ const initDatabase = async (db) => {
     await db.execAsync(`
       CREATE TABLE IF NOT EXISTS medicines (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
         medicine_name TEXT NOT NULL,
         amount INTEGER NOT NULL,
         hours INTEGER NOT NULL,
-        days INTEGER NOT NULL
+        days INTEGER NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
       );
     `)
 
@@ -15,8 +17,7 @@ const initDatabase = async (db) => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE NOT NULL,
         token TEXT NOT NULL,
-        medicine_id INTEGER,
-        FOREIGN KEY (medicine_id) REFERENCES medicines(id) ON DELETE CASCADE
+        is_admin BOOLEAN NOT NULL
       );
     `)
   } catch (error) {

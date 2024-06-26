@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "takanakuq-kuna-mobile",
+    "name": "takanakuq kuna",
     "slug": "takanakuq-kuna-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.1.jpg",
+    "icon": "./assets/logo.jpg",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/logo.1.jpg",
+      "image": "./assets/logo.jpg",
       "resizeMode": "contain",
       "backgroundColor": "#f1e9de"
     },
@@ -18,10 +18,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.takanakuq",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d1b007bb-dff7-4293-a4e1-71f03a165204"
+      }
     }
   }
 }

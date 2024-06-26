@@ -4,6 +4,7 @@ import { styles } from '../styles/formStyles'
 import { apiClient } from '../../../utils/api/client'
 import { useSQLiteContext } from 'expo-sqlite'
 import { LoadingModal } from './LoadingModal'
+import { jwtDecode } from 'jwt-decode'
 
 export const FormLogin = ({ navigation }) => {
   const db = useSQLiteContext()
@@ -28,9 +29,18 @@ export const FormLogin = ({ navigation }) => {
       })
 
       if (response) {
-        await db.runAsync('INSERT INTO user (username, token) VALUES (?, ?);', [
+        let is_admin
+        const decodedToken = jwtDecode(response.data.access_token)
+        if (decodedToken.is_admin) { 
+          is_admin = decodedToken.is_admin
+        } else {
+          is_admin = false
+        }
+        
+        await db.runAsync('INSERT INTO user (username, token, is_admin) VALUES (?, ?, ?);', [
           username, 
-          response.data.access_token
+          response.data.access_token,
+          is_admin
         ])
         console.log('Insertion successfully')
         navigation.navigate('Home')

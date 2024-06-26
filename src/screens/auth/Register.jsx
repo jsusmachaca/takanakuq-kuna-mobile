@@ -4,8 +4,8 @@ import { FormRegister } from './components/FormRegister'
 import { styles } from './styles/styles'
 import { useSQLiteContext } from 'expo-sqlite'
 
-import logo_1 from './assets/avatars/logo.1.jpg'
-import logo_2 from './assets/avatars/logo.2.jpg'
+import logo_1 from './assets/avatars/logo-1.jpg'
+import logo_2 from './assets/avatars/logo-2.jpg'
 
 const logos = [logo_1, logo_2]
 

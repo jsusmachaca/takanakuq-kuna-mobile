@@ -5,6 +5,8 @@ import { useSQLiteContext } from "expo-sqlite"
 import RNPickerSelect from "react-native-picker-select"
 import logo from '../../assets/logoNombreHorizontal3.png'
 import { styles } from './styles/header'
+import defaultProfile from '../../assets/default.png'
+
 
 export const Header = ({ navigation }) => {
   const db = useSQLiteContext()
@@ -53,7 +55,12 @@ export const Header = ({ navigation }) => {
         style={styles.picker}>
         <Image 
           style={styles.imageProfile} 
-          source={{ uri: userInfo.profile_image }}
+          source={
+            userInfo.profile_image ?
+              { uri: userInfo.profile_image }
+            :
+              defaultProfile
+          }
         />
       </RNPickerSelect>
     </View>

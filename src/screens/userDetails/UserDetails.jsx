@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
-import { View, Image, Text, FlatList, Dimensions, ActivityIndicator, RefreshControl, Alert } from "react-native"
+import { View, Image, Text, FlatList, Dimensions, ActivityIndicator, RefreshControl, Alert, TouchableOpacity, Modal, TextInput, Platform } from "react-native"
 import { apiClient } from "../../utils/api/client"
 import { useSQLiteContext } from "expo-sqlite"
 import { PostsItem } from "../home/components/PostsItem"
@@ -8,7 +8,12 @@ import { bg } from './assets/bg.png'
 import RNPickerSelect from "react-native-picker-select"
 import { Path, Svg } from "react-native-svg"
 import { styles } from "./styles/details"
+import defaultProfile from './assets/default.png'
 import { UserDescription } from "./components/UserDescription"
+import * as ImagePicker from 'expo-image-picker'
+import { LoadingModal } from "../auth/components/LoadingModal"
+import { EditUserDetails } from "./components/EditUserDetails"
+
 
 export const UserDetails = () => {
   const db = useSQLiteContext()
@@ -17,10 +22,77 @@ export const UserDetails = () => {
   const [loading, setLoading] = useState(true)
   const [index, setIndex] = useState(0)
   const [refreshing, setRefreshing] = useState(false)
+  const [modalVisible, setModalVisible] = useState(false)
+  const [description, setDescription] = useState('')
+  const [image, setImage] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+
+
   const [routes] = useState([
     { key: 'first', title: 'Información' },
     { key: 'second', title: 'Tus Posts' },
   ])
+
+  const pickImage = async () => {
+    if (Platform.OS !== 'web') {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+      if (status !== 'granted') {
+        Alert.alert('Lo siento, necesitamos permisos para acceder a la cámara.')
+        return
+      }
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    })
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  }
+
+    
+  const profileHandler = useCallback(async () => {
+    try {
+      setIsLoading(true)
+      
+      const [result] = await db.getAllAsync('SELECT * FROM user')
+
+      let formData = new FormData();
+
+      if (image) {
+        let filename = image.split('/').pop()
+        let match = /\.(\w+)$/.exec(filename)
+        let type = match ? `image/${match[1]}` : `image`
+
+        formData.append('profile_image', { uri: image, name: filename, type })
+      }
+      if (description.length === 0){
+        setDescription(userDetails.description)
+      }
+      formData.append('description', description);
+
+      const response = await apiClient.put('/api/user/edit-profile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${result.token}`,
+        },
+      })
+      setDescription(response.data.description)
+    } catch (err) {
+      console.log(err.response?.data || err.message)
+      Alert.alert('Error', err.response.data.error)
+    } finally {
+      setIsLoading(false)
+      setModalVisible(false)
+      setLoading(false)
+      fetchingUserInfo()
+    }
+  }, [image, description, db])
+
 
   const fetchPostData = async () => {
     try {
@@ -46,6 +118,7 @@ export const UserDetails = () => {
         } 
       })
       setUserDetails(res.data)
+      setDescription(res.data.description)
     } catch (err) {
       console.error(err.message)
     } finally {
@@ -163,16 +236,54 @@ export const UserDetails = () => {
           <View style={styles.userImageContainer}>
           <Image
             style={styles.userImage}
-            source={{uri: userDetails.profile_image}} 
+            source={
+              userDetails.profile_image ?
+              { 
+                uri: userDetails.profile_image
+              }
+              :
+              defaultProfile
+            }
             />
           </View>
-          <View >
+          <View>
             <Text style={styles.userNames}>
-              { userDetails.first_name.toUpperCase() } { userDetails.last_name.toUpperCase() }
+              { userDetails.first_name.toUpperCase() } 
+            </Text>
+            <Text style={styles.userNames}>
+              { userDetails.last_name.toUpperCase() }
             </Text>
           </View>
         </>
         )}
+        <TouchableOpacity
+          onPress={() => setModalVisible(true)}
+          style={{ 
+            position: 'absolute', 
+            justifyContent: 'center',
+            alignItems: 'center',
+            bottom: 5, 
+            right: 5,
+            width: 45,
+            height: 45,
+            borderRadius: 360,
+            backgroundColor: '#F44E19',    
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 5,
+              height: 5
+            },
+            shadowOpacity: 1,
+            shadowRadius: 5.65,
+            elevation: 7, 
+          }}>
+          <Svg viewBox="0 0 18 18" width='27' height='27'>
+            <Path 
+              d="M0,14.2 L0,18 L3.8,18 L14.8,6.9 L11,3.1 L0,14.2 L0,14.2 Z M17.7,4 C18.1,3.6 18.1,3 17.7,2.6 L15.4,0.3 C15,-0.1 14.4,-0.1 14,0.3 L12.2,2.1 L16,5.9 L17.7,4 L17.7,4 Z"
+              fill='#fff'
+              />
+          </Svg>
+        </TouchableOpacity>
       </View>
       <TabView 
         navigationState={{ index, routes }}
@@ -188,6 +299,20 @@ export const UserDetails = () => {
           />
         )}
       />
+
+      <Modal visible={modalVisible} transparent={true} animationType="fade" >
+        <LoadingModal isLoading={isLoading} />
+          <EditUserDetails 
+            userDetails={userDetails}
+            image={image}
+            description={description}
+            defaultProfile={defaultProfile}
+            setDescription={setDescription}
+            profileHandler={profileHandler}
+            setModalVisible={() => setModalVisible(false)}
+            pickImage={pickImage}
+          />
+      </Modal>
     </View>
   )
 }
