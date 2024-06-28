@@ -148,6 +148,7 @@ export const UserDetails = () => {
             }
           } catch (err) {
             console.error(err.response.data)
+            Alert.alert('Error', 'Lo siento, hubo un problema con nuestros servidores. Por favor, inténtalo nuevamente en unos momentos.')
           } finally {
             onRefresh()
           }

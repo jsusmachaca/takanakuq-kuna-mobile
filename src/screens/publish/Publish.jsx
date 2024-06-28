@@ -92,7 +92,7 @@ export const Publish = ({ navigation }) => {
       }
     } catch (err) {
       console.error(err)
-      Alert.alert('Lo siento, hemos tenido inconvenientes con nuestros servidores.')
+      Alert.alert('Error', 'Lo siento, hubo un problema con nuestros servidores. Por favor, inténtalo nuevamente en unos momentos.')
     } finally {
       setIsLoading(false)
     }
