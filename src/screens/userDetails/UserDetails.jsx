@@ -166,7 +166,7 @@ export const UserDetails = () => {
 
   const initialLayout = { width: Dimensions.get('window').width };
 
-  const keyExtractor = useCallback((item) => item.id, [])
+  const keyExtractor = useCallback((item) => item.id.toString(), [])
 
   const renderItem = useCallback(({ item }) => (
     <View style={styles.postContainer}>

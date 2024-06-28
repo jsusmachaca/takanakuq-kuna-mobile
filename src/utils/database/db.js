@@ -17,7 +17,8 @@ const initDatabase = async (db) => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE NOT NULL,
         token TEXT NOT NULL,
-        is_admin BOOLEAN NOT NULL
+        is_admin BOOLEAN NOT NULL,
+        is_staff BOOLEAN NOT NULL
       );
     `)
   } catch (error) {

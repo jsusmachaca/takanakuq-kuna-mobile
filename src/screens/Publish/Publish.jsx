@@ -24,11 +24,11 @@ export const Publish = ({ navigation }) => {
   }, [])
 
   const pickImage = async () => {
-    if (Platform.OS !== 'web') {
+    if (Platform.OS === 'android') {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
       if (status !== 'granted') {
         Alert.alert('Lo siento, necesitamos permisos para acceder a la cámara.')
-        return
+        throw new Error('Not permissions')
       }
     }
 

@@ -5,14 +5,14 @@ import { PostsItem } from "./PostsItem"
 
 export const Posts = () => {
   const [refreshing, setRefreshing] = useState(false)
-  const [data, setData] = useState({})
+  const [data, setData] = useState([])
 
   const fetchData = async () => {
     try {
       const res = await apiClient.get(`/api/posts/all`)
       setData(res.data)
     } catch (err) {
-      console.error(err.response)
+      console.error('Error fetching data: ', err)
     }
   }
 
@@ -27,6 +27,8 @@ export const Posts = () => {
       setRefreshing(false)
     }, 2000)
   }
+  
+  const keyExtractor = useCallback((item) => item.id.toString(), [])
 
   const renderItem = useCallback(({ item }) => (
     <PostsItem 
@@ -59,7 +61,7 @@ export const Posts = () => {
       }}
       data={data}
       renderItem={renderItem}
-      keyExtractor={item => item.id.toString()}
+      keyExtractor={keyExtractor}
       initialNumToRender={10}
       maxToRenderPerBatch={10}
       windowSize={5}

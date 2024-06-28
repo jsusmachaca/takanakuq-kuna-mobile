@@ -24,30 +24,29 @@ export const FormLogin = ({ navigation }) => {
       }
       
       const response = await apiClient.post('/api/user/login', {
-        username: username,
+        username: username.trim(),
         password: password
       })
 
+      let is_admin = false
+      let is_staff = false
+
       if (response) {
-        let is_admin
         const decodedToken = jwtDecode(response.data.access_token)
-        if (decodedToken.is_admin) { 
-          is_admin = decodedToken.is_admin
-        } else {
-          is_admin = false
-        }
-        
-        await db.runAsync('INSERT INTO user (username, token, is_admin) VALUES (?, ?, ?);', [
-          username, 
+        is_admin = decodedToken.is_admin || false
+        is_staff = decodedToken.is_staff || false
+      
+        await db.runAsync('INSERT INTO user (username, token, is_admin, is_staff) VALUES (?, ?, ?, ?);', [
+          username.trim(),
           response.data.access_token,
-          is_admin
+          is_admin,
+          is_staff
         ])
         console.log('Insertion successfully')
         navigation.navigate('Home')
       }
     } catch (err) {
       setError(true)
-      Alert.alert(err)
       console.error(`Error => ${err.response?.data || err.message}`)
     } finally {
       setIsLoading(false)
