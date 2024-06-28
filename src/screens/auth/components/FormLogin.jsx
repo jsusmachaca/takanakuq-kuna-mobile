@@ -1,4 +1,4 @@
-import { TextInput, View, TouchableOpacity, Text, TouchableWithoutFeedback } from 'react-native' 
+import { TextInput, View, TouchableOpacity, Text, TouchableWithoutFeedback, Alert } from 'react-native' 
 import { useState, useCallback } from 'react'
 import { styles } from '../styles/formStyles'
 import { apiClient } from '../../../utils/api/client'
@@ -47,6 +47,7 @@ export const FormLogin = ({ navigation }) => {
       }
     } catch (err) {
       setError(true)
+      Alert.alert(err)
       console.error(`Error => ${err.response?.data || err.message}`)
     } finally {
       setIsLoading(false)

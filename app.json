@@ -4,10 +4,10 @@
     "slug": "takanakuq-kuna-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.jpg",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/logo.jpg",
+      "image": "./assets/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#f1e9de"
     },
@@ -16,8 +16,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#f1e9de"
       },
       "package": "com.takanakuq",
       "versionCode": 1

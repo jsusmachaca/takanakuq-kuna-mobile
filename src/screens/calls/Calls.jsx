@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react"
-import { View, Text } from "react-native"
+import { View, Text, Platform, PermissionsAndroid, StyleSheet, Button } from "react-native"
+import { WebView } from 'react-native-webview'
 import { useSQLiteContext } from 'expo-sqlite'
-
-const appId = '3842627e445d421b8908bea863efa541'
-const channelName = 'testChannel'
 
 export const Calls = () => {
   const db = useSQLiteContext()
