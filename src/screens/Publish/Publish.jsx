@@ -21,17 +21,20 @@ export const Publish = ({ navigation }) => {
     setImage(null)
     setPlaceholderColor('#636363')
     setPlaceholder('¿Comparte lo que sientes?')
+
+    if (Platform.OS === 'android') {
+      const requestPermission = async () => {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+        if (status !== 'granted') {
+          Alert.alert('Lo siento, necesitamos permisos para acceder a la cámara.')
+        }
+      }
+      requestPermission()
+    }
+
   }, [])
 
   const pickImage = async () => {
-    if (Platform.OS === 'android') {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
-      if (status !== 'granted') {
-        Alert.alert('Lo siento, necesitamos permisos para acceder a la cámara.')
-        throw new Error('Not permissions')
-      }
-    }
-
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -67,10 +70,7 @@ export const Publish = ({ navigation }) => {
       
       if (image) {
         let filename = image.split('/').pop()
-        let match = /\.(\w+)$/.exec(filename)
-        let type = match ? `image/${match[1]}` : `image`
-        
-        formData.append('post_image', { uri: image, name: filename, type })
+        formData.append('post_image', { uri: image, name: filename })
       }
       formData.append('post', post);
   
@@ -89,7 +89,7 @@ export const Publish = ({ navigation }) => {
       }
     } catch (err) {
       console.error(err)
-      Alert.alert('Lo siento, no pudimos realizar su publicación.')
+      Alert.alert('Lo siento, hemos tenido inconvenientes con nuestros servidores.')
     } finally {
       setIsLoading(false)
     }

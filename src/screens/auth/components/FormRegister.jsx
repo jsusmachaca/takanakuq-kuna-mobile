@@ -1,4 +1,4 @@
-import { TextInput, View, TouchableOpacity, Text, Alert, Modal, ActivityIndicator } from 'react-native' 
+import { TextInput, View, TouchableOpacity, Text, Alert } from 'react-native' 
 import { useState, useCallback } from 'react'
 import { styles } from '../styles/formStyles'
 import { apiClient } from '../../../utils/api/client'
@@ -74,7 +74,8 @@ export const FormRegister = ({ navigation }) => {
         navigation.navigate('Profile')
       }
     } catch (err) {
-      console.error(err.response?.data || err.message)
+      console.error(err)
+      Alert.alert('Lo siento, hemos tenido inconvenientes con nuestros servidores.')
     } finally {
       setIsLoading(false)
     }

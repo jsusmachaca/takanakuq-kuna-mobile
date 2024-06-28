@@ -62,8 +62,8 @@ export const FormProfile = ({ navigation }) => {
       navigation.navigate('Home')
       console.log(response.data)
     } catch (err) {
-      console.log(err.response?.data || err.message)
-      Alert.alert('Error', err.response.data.error)
+      console.log(err)
+      Alert.alert('Lo siento, hemos tenido inconvenientes con nuestros servidores.')
     } finally {
       setIsLoading(false)
     }

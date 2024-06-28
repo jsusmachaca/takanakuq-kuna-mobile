@@ -47,7 +47,8 @@ export const FormLogin = ({ navigation }) => {
       }
     } catch (err) {
       setError(true)
-      console.error(`Error => ${err.response?.data || err.message}`)
+      console.error(err)
+      Alert.alert('Lo siento, hemos tenido inconvenientes con nuestros servidores.')
     } finally {
       setIsLoading(false)
     }
