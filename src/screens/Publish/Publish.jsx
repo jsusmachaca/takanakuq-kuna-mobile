@@ -72,7 +72,7 @@ export const Publish = ({ navigation }) => {
         let filename = image.split('/').pop()
         let match = /\.(\w+)$/.exec(filename)
         let type = match ? `image/${match[1]}` : `image`
-        
+
         formData.append('post_image', { uri: image, name: filename, type })
       }
       formData.append('post', post);
@@ -91,7 +91,7 @@ export const Publish = ({ navigation }) => {
         navigation.navigate('Home')
       }
     } catch (err) {
-      console.error(err.response)
+      console.error(err)
       Alert.alert('Lo siento, hemos tenido inconvenientes con nuestros servidores.')
     } finally {
       setIsLoading(false)
