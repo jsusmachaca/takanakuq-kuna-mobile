@@ -46,9 +46,12 @@ export const FormLogin = ({ navigation }) => {
         navigation.navigate('Home')
       }
     } catch (err) {
-      setError(true)
       console.error(err)
-      Alert.alert('Error', 'Lo siento, hubo un problema con nuestros servidores. Por favor, inténtalo nuevamente en unos momentos.')
+      if (err.response && err.response.data) {
+        setError(true)
+      } else {
+        Alert.alert('Error', 'Lo siento, hubo un problema con nuestros servidores. Por favor, inténtalo nuevamente en unos momentos.')
+      }
     } finally {
       setIsLoading(false)
     }
