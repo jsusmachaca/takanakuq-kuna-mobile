@@ -1,5 +1,5 @@
 import { Home } from './src/screens/home/Home';
-import { Publish } from './src/screens/Publish/Publish';
+import { Publish } from './src/screens/publish/Publish';
 import { Login } from './src/screens/auth/Login';
 import { Register } from './src/screens/auth/Register';
 import { Profile } from './src/screens/auth/Profile';
