@@ -4,6 +4,7 @@ import { styles } from '../styles/formStyles'
 import { apiClient } from '../../../utils/api/client'
 import { useSQLiteContext } from 'expo-sqlite'
 import { LoadingModal } from './LoadingModal'
+import { jwtDecode } from 'jwt-decode'
 
 export const FormRegister = ({ navigation }) => {
   const db = useSQLiteContext()
@@ -17,6 +18,7 @@ export const FormRegister = ({ navigation }) => {
   const [confirmPassword, setConfirmPassword] = useState('')
 
   const [errors, setErrors] = useState({})
+  const [errorReq, setErrorReq] = useState('')
   
   const validations = useCallback(() => {
     let tempErrors = {};
@@ -35,7 +37,7 @@ export const FormRegister = ({ navigation }) => {
 
   const handleRegister = useCallback(async () => {
     if (!validations()) {
-      return;
+      return
     }
 
     try {
@@ -75,7 +77,15 @@ export const FormRegister = ({ navigation }) => {
       }
     } catch (err) {
       console.error(err)
-      Alert.alert('Error', 'Lo siento, hubo un problema con nuestros servidores. Por favor, inténtalo nuevamente en unos momentos.')
+      if (err.response && err.response.data) {
+        if (err.response.data === 'the user you are trying to register already exists') {
+          setErrorReq('La cuenta que estás tratando de registrar ya existe. Por favor inicia sesión')
+        } else {
+          Alert.alert('Error', 'Lo siento, hubo un problema con nuestros servidores. Por favor, inténtalo nuevamente en unos momentos.')
+        }
+      } else {
+        Alert.alert('Error', 'Lo siento, hubo un problema con nuestros servidores. Por favor, inténtalo nuevamente en unos momentos.')
+      }
     } finally {
       setIsLoading(false)
     }
@@ -86,6 +96,11 @@ export const FormRegister = ({ navigation }) => {
       <LoadingModal isLoading={isLoading} />
 
       <View style={styles.formulario}>
+        {
+          errorReq.length !== 0 && (
+            <Text style={{ marginBottom: 10, fontSize: 17, color: '#CD0A0A' }}>{ errorReq }</Text>
+          )
+        }
         <TextInput 
           placeholder={errors.namesError ? errors.namesError : 'Ingrese sus Nombres'}
           placeholderTextColor={errors.namesError ? '#CD0A0A' : '#636363'}
