@@ -5,6 +5,7 @@ import { apiClient } from '../../../utils/api/client'
 import { useSQLiteContext } from 'expo-sqlite'
 import { LoadingModal } from './LoadingModal'
 import { jwtDecode } from 'jwt-decode'
+import { renderError } from '../utils/renderError'
 
 export const FormRegister = ({ navigation }) => {
   const db = useSQLiteContext()
@@ -21,9 +22,9 @@ export const FormRegister = ({ navigation }) => {
   const [errorReq, setErrorReq] = useState('')
   
   const validations = useCallback(() => {
-    let tempErrors = {};
+    let tempErrors = {}
 
-    if (!username) tempErrors.usernameError = 'Debe escribir un Nombre de Usuario'
+    if (!username) tempErrors.usernameError = 'Debe escribir un nombre de Usuario'
     if (!email) tempErrors.emailError = 'Debe escribir un Email'
     if (!names) tempErrors.namesError = 'Debe escribir un Nombre'
     if (!lastNames) tempErrors.lastNamesError = 'Debe escribir un Apellido'
@@ -78,7 +79,7 @@ export const FormRegister = ({ navigation }) => {
     } catch (err) {
       console.error(err)
       if (err.response && err.response.data) {
-        if (err.response.data === 'the user you are trying to register already exists') {
+        if (err.response.data.error === 'the user you are trying to register already exists') {
           setErrorReq('La cuenta que estás tratando de registrar ya existe. Por favor inicia sesión')
         } else {
           Alert.alert('Error', 'Lo siento, hubo un problema con nuestros servidores. Por favor, inténtalo nuevamente en unos momentos.')
@@ -96,30 +97,29 @@ export const FormRegister = ({ navigation }) => {
       <LoadingModal isLoading={isLoading} />
 
       <View style={styles.formulario}>
-        {
-          errorReq.length !== 0 && (
-            <Text style={{ marginBottom: 10, fontSize: 17, color: '#CD0A0A' }}>{ errorReq }</Text>
-          )
-        }
+        {renderError(errorReq)}
+        {renderError(errors.namesError)}
+        {renderError(errors.lastNamesError)}
+        {renderError(errors.usernameError)}
+        {renderError(errors.emailError)}
+        {renderError(errors.passwordError)}
+        {renderError(errors.confError)}
         <TextInput 
-          placeholder={errors.namesError ? errors.namesError : 'Ingrese sus Nombres'}
-          placeholderTextColor={errors.namesError ? '#CD0A0A' : '#636363'}
+          placeholder='Ingrese sus Nombres'
           style={[styles.loginInput, errors.namesError ? { borderWidth: 1, borderColor: '#CD0A0A' } : {}]}
           returnKeyType='next'
           value={names}
           onChangeText={setNames}
         />
         <TextInput 
-          placeholder={errors.lastNamesError ? errors.lastNamesError : 'Ingrese sus Apellidos'}
-          placeholderTextColor={errors.lastNamesError ? '#CD0A0A' : '#636363'}
+          placeholder='Ingrese sus Apellidos'
           style={[styles.loginInput, errors.lastNamesError ? { borderWidth: 1, borderColor: '#CD0A0A' } : {}]}
           returnKeyType='next'
           value={lastNames}
           onChangeText={setLastNames}
         />
         <TextInput 
-          placeholder={errors.usernameError ? errors.usernameError : 'Ingrese un Nombre de Usuario'}
-          placeholderTextColor={errors.usernameError ? '#CD0A0A' : '#636363'}
+          placeholder='Ingrese un Nombre de Usuario'
           style={[styles.loginInput, errors.usernameError ? { borderWidth: 1, borderColor: '#CD0A0A' } : {}]}
           returnKeyType='next'
           autoCapitalize='none'
@@ -127,8 +127,7 @@ export const FormRegister = ({ navigation }) => {
           onChangeText={setUsername}
         />
         <TextInput
-          placeholder={errors.emailError ? errors.emailError : 'Ingrese un Correo Electrónico'}
-          placeholderTextColor={errors.emailError ? '#CD0A0A' : '#636363'}
+          placeholder='Ingrese un Correo Electrónico'
           style={[styles.loginInput, errors.emailError ? { borderWidth: 1, borderColor: '#CD0A0A' } : {}]}
           returnKeyType='next'
           autoCapitalize='none'
@@ -136,8 +135,7 @@ export const FormRegister = ({ navigation }) => {
           onChangeText={setEmail}
         />
         <TextInput 
-          placeholder={errors.passwordError ? errors.passwordError : 'Ingrese un Contraseña'}
-          placeholderTextColor={errors.passwordError ? '#CD0A0A' : '#636363'}
+          placeholder='Ingrese un Contraseña'
           style={[styles.loginInput, errors.passwordError ? { borderWidth: 1, borderColor: '#CD0A0A' } : {}]}
           returnKeyType='next'
           autoCapitalize='none'
@@ -146,10 +144,8 @@ export const FormRegister = ({ navigation }) => {
           onChangeText={setPassword}
         />
         <TextInput 
-          placeholder={errors.confError ? errors.confError : 'Confirme su Contraseña'}
-          placeholderTextColor={errors.confError ? '#CD0A0A' : '#636363'}
+          placeholder='Confirme su Contraseña'
           style={[styles.loginInput, errors.confError ? { borderWidth: 1, borderColor: '#CD0A0A' } : {}]}
-
           autoCapitalize='none'
           secureTextEntry={true}
           value={confirmPassword}

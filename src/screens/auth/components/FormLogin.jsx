@@ -63,7 +63,7 @@ export const FormLogin = ({ navigation }) => {
       <View style={styles.formulario}>
         {
           error ?
-            <Text style={{ marginBottom: 10, fontSize: 17, color: '#CD0A0A' }}>Credenciales incorrectas</Text>
+            <Text style={{ marginHorizontal: 10, marginBottom: 10, fontSize: 17, color: '#CD0A0A' }}>Credenciales incorrectas</Text>
           :
             <></>
         }
