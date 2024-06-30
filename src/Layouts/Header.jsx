@@ -21,7 +21,6 @@ export const Header = ({ navigation }) => {
         }
       })
       setUserInfo(res.data)
-      await db.runAsync('UPDATE user SET id=?;', [res.data.id])
     } catch (err) {
       console.error(err.message)
     }

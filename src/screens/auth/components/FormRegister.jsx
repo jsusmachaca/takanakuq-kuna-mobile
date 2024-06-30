@@ -58,23 +58,21 @@ export const FormRegister = ({ navigation }) => {
           password: password
         })
 
-        let is_admin = false
-        let is_staff = false
-
         if (loginResponse) {
           const decodedToken = jwtDecode(loginResponse.data.access_token)
-          is_admin = decodedToken.is_admin || false
-          is_staff = decodedToken.is_staff || false
+          const is_admin = decodedToken.is_admin || false
+          const is_staff = decodedToken.is_staff || false
+          
+          await db.runAsync(`INSERT INTO user (id, username, token, is_admin, is_staff) VALUES (?, ?, ?, ?, ?);`, [
+            decodedToken.user_id,
+            username.trim(), 
+            loginResponse.data.access_token,
+            is_admin,
+            is_staff
+          ])
+          console.log('Insertion successfully')
+          navigation.navigate('Profile')
         }
-
-        await db.runAsync(`INSERT INTO user (username, token, is_admin, is_staff) VALUES (?, ?, ?, ?);`, [
-          username.trim(), 
-          loginResponse.data.access_token,
-          is_admin,
-          is_staff
-        ])
-        console.log('Insertion successfully')
-        navigation.navigate('Profile')
       }
     } catch (err) {
       console.error(err)

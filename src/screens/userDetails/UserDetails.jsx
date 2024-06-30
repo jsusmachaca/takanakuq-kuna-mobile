@@ -108,14 +108,13 @@ export const UserDetails = () => {
     }
   }
   
-  
   const fetchingUserInfo = async () => {
     try {
       const [result] = await db.getAllAsync('SELECT * FROM user')
       const res = await apiClient.get('/api/user/data', {
         headers: {
           Authorization: `Bearer ${result.token}`
-        } 
+        }
       })
       setUserDetails(res.data)
       setDescription(res.data.description)

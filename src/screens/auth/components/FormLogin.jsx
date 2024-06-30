@@ -28,15 +28,13 @@ export const FormLogin = ({ navigation }) => {
         password: password
       })
 
-      let is_admin = false
-      let is_staff = false
-
       if (response) {
         const decodedToken = jwtDecode(response.data.access_token)
-        is_admin = decodedToken.is_admin || false
-        is_staff = decodedToken.is_staff || false
+        const is_admin = decodedToken.is_admin || false
+        const is_staff = decodedToken.is_staff || false
       
-        await db.runAsync('INSERT INTO user (username, token, is_admin, is_staff) VALUES (?, ?, ?, ?);', [
+        await db.runAsync('INSERT INTO user (id, username, token, is_admin, is_staff) VALUES (?, ?, ?, ?, ?);', [
+          decodedToken.user_id,
           username.trim(),
           response.data.access_token,
           is_admin,
