@@ -18,7 +18,7 @@ export const AddIcon = () => {
   return (
       <Svg width="150" height="150"
         style={{
-          marginTop: -20,
+          marginTop: -17,
           padding: 0,
           transform: [{
             rotate: '90deg'

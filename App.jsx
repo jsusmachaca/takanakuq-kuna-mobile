@@ -1,25 +1,25 @@
-import { Home } from './src/screens/home/Home';
-import { Publish } from './src/screens/publish/Publish';
-import { Login } from './src/screens/auth/Login';
-import { Register } from './src/screens/auth/Register';
-import { Profile } from './src/screens/auth/Profile';
-import { Calls } from './src/screens/calls/Calls';
-import { Recipes } from './src/screens/recipes/Recipes';
+import { Home } from './src/screens/home/Home'
+import { Publish } from './src/screens/publish/Publish'
+import { Login } from './src/screens/auth/Login'
+import { Register } from './src/screens/auth/Register'
+import { Profile } from './src/screens/auth/Profile'
+import { Chat } from './src/screens/chat/Chat'
+import { Recipes } from './src/screens/recipes/Recipes'
 
-import { HomeIcon } from './src/icons/components/HomeIcon';
-import { AddIcon } from './src/icons/components/AddIcon';
-import { HeartIcon } from './src/icons/components/HeartIcon';
+import { HomeIcon } from './src/icons/components/HomeIcon'
+import { AddIcon } from './src/icons/components/AddIcon'
+import { HeartIcon } from './src/icons/components/HeartIcon'
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import initDatabase from './src/utils/database/db';
-import { SQLiteProvider } from 'expo-sqlite';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import initDatabase from './src/utils/database/db'
+import { SQLiteProvider } from 'expo-sqlite'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
-import { UserDetailIcon } from './src/icons/components/UserDetailsIcon';
-import { UserDetails } from './src/screens/userDetails/UserDetails';
-import { CallIcon } from './src/icons/components/CallIcon';
-import { Header } from './src/Layouts/Header';
+import { UserDetailIcon } from './src/icons/components/UserDetailsIcon'
+import { UserDetails } from './src/screens/userDetails/UserDetails'
+import { CharIcon } from './src/icons/components/ChatIcon'
+import { Header } from './src/Layouts/Header'
 
 const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -28,9 +28,9 @@ const HomeTabs = () => (
     <Tab.Navigator screenOptions={{
       tabBarShowLabel: false,
       tabBarStyle: {
-        height: 55,
+        height: 55
       },
-      header : ({ navigation }) => <Header navigation={navigation} />,
+      header: ({ navigation }) => <Header navigation={navigation} />,
       headerStyle: [{ height: 50 }]
     }}>
       <Tab.Screen 
@@ -43,11 +43,11 @@ const HomeTabs = () => (
         }}
       />
       <Tab.Screen 
-        name='Calls'
-        component={Calls}
+        name='Chat'
+        component={Chat}
         options={{
           tabBarIcon: ({ focused }) => (
-            <CallIcon color={focused ? '#151515': 'none'} />
+            <CharIcon color={focused ? '#151515': 'none'} />
           )
         }}
       />

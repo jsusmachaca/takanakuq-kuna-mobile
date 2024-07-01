@@ -5,8 +5,8 @@ import { Svg, Polygon, Line, Path, G } from 'react-native-svg';
 export const HomeIcon = ({ color }) => {
   return (
     <Svg
-      width='29'
-      height='29'
+      width='28'
+      height='28'
       viewBox='0 0 24 24'
       fill='none'
     >
