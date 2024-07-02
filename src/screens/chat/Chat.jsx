@@ -80,8 +80,7 @@ export const Chat = () => {
         onSend={messages => onSend(messages)}
         user={{
           _id: 1,
-          name: userInfo.username,
-          avatar: ''
+          name: userInfo.username
         }}
       />
     </ImageBackground>
