@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react"
-import { ImageBackground } from "react-native"
+import { ImageBackground, View, Image } from "react-native"
 import { useSQLiteContext } from 'expo-sqlite'
 import { GiftedChat } from "react-native-gifted-chat"
 import { apiClient } from "../../utils/api/client"
@@ -74,7 +74,8 @@ export const Chat = () => {
   }, [socket])
 
   return (
-    <ImageBackground source={require('./assets/bg.png')} resizeMode="cover" style={{ width: '100%', height: '100%' }}>
+    <View style={{ width: '100%', height: '100%', position: 'relative' }}>
+      <Image source={require('./assets/bg.png')} style={{ position: 'absolute', width: '100%', height: '90%', zIndex: -1, opacity: .4, objectFit: 'fill' }} />
       <GiftedChat 
         messages={messages}
         onSend={messages => onSend(messages)}
@@ -83,6 +84,6 @@ export const Chat = () => {
           name: userInfo.username
         }}
       />
-    </ImageBackground>
+    </View>
   )
 }
